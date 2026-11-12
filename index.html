@@ -442,6 +442,14 @@
                   <i class="ph ph-aperture text-neutral-400"></i>
                   <span>F STOP</span>
                 </button>
+                <button id="opticalRaysBtn" class="px-2.5 py-1 rounded border border-dark-border bg-black text-neutral-300 hover:text-white hover:border-neutral-500 transition-all flex items-center gap-1.5">
+                  <i class="ph ph-sparkle text-neutral-400"></i>
+                  <span id="raysBtnText">OPT RAYS</span>
+                </button>
+                <button id="calibrationGridBtn" class="px-2.5 py-1 rounded border border-dark-border bg-black text-neutral-300 hover:text-white hover:border-neutral-500 transition-all flex items-center gap-1.5">
+                  <i class="ph ph-crosshair text-neutral-400"></i>
+                  <span id="calibBtnText">CALIB GRID</span>
+                </button>
               </div>
               <span class="text-neutral-500">DRAG ROTATES · SCROLL FOCUSES</span>
             </div>
@@ -610,6 +618,15 @@
                 <button class="room-frame-btn px-3 py-2 rounded-lg border border-dark-border bg-dark-card text-neutral-300 text-xs font-semibold hover:border-neutral-500 transition-all" data-frame="black">Black Oak</button>
                 <button class="room-frame-btn px-3 py-2 rounded-lg border border-dark-border bg-dark-card text-neutral-300 text-xs font-semibold hover:border-neutral-500 transition-all" data-frame="raw">Unframed</button>
               </div>
+            </div>
+
+            <!-- Tour Room Button -->
+            <div class="flat-card p-6 flex flex-col gap-3">
+              <label class="text-xs font-mono text-neutral-400">CINEMATIC TOUR</label>
+              <button id="tourRoomBtn" class="py-2 px-3 rounded-lg border border-dark-border bg-dark-card text-xs font-semibold text-neutral-300 hover:text-white hover:border-neutral-500 transition-all flex items-center justify-center gap-2">
+                <i class="ph ph-film-strip"></i>
+                <span>TOUR ROOM</span>
+              </button>
             </div>
 
             <!-- Mount Next Artwork Button -->
@@ -1645,6 +1662,156 @@
         });
       }
 
+
+      // ── SYSTEM 1: Anamorphic Lens Flare Streak ───────────────────────────────
+      const anamorphicGeo = new THREE.PlaneGeometry(5.5, 0.03);
+      const anamorphicMat = new THREE.MeshBasicMaterial({
+        color: 0x44ddff,
+        transparent: true,
+        opacity: 0.0,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      });
+      const anamorphicStreak = new THREE.Mesh(anamorphicGeo, anamorphicMat);
+      anamorphicStreak.position.z = 1.8;
+      heroScene.add(anamorphicStreak);
+
+      // Secondary violet streak for prismatic split
+      const anamorphicGeo2 = new THREE.PlaneGeometry(3.8, 0.018);
+      const anamorphicMat2 = new THREE.MeshBasicMaterial({
+        color: 0xcc44ff,
+        transparent: true,
+        opacity: 0.0,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+      });
+      const anamorphicStreak2 = new THREE.Mesh(anamorphicGeo2, anamorphicMat2);
+      anamorphicStreak2.position.z = 1.75;
+      anamorphicStreak2.position.y = 0.06;
+      heroScene.add(anamorphicStreak2);
+
+      // Iridescent bezel rings (caustic effect)
+      const causticRings = [];
+      [0x44ffaa, 0xaa44ff, 0xffaa44].forEach((col, i) => {
+        const rg = new THREE.TorusGeometry(2.1 + i * 0.065, 0.012, 8, 64);
+        const rm = new THREE.MeshBasicMaterial({
+          color: col, transparent: true, opacity: 0.0,
+          blending: THREE.AdditiveBlending, depthWrite: false,
+        });
+        const ring = new THREE.Mesh(rg, rm);
+        ring.position.z = 1.72;
+        heroScene.add(ring);
+        causticRings.push(ring);
+      });
+
+      // ── SYSTEM 2: 12 Refracting Collimated Optical Rays ─────────────────────
+      const rayCount = 12;
+      const rayPositions = new Float32Array(rayCount * 6); // 2 points per ray
+      for (let i = 0; i < rayCount; i++) {
+        const angle = (i / rayCount) * Math.PI * 2;
+        const radius_ray = 1.6; // aperture radius at f/1.4
+        // Start: in front of lens (z=2.5), spread at aperture radius
+        rayPositions[i * 6 + 0] = Math.cos(angle) * radius_ray;
+        rayPositions[i * 6 + 1] = Math.sin(angle) * radius_ray;
+        rayPositions[i * 6 + 2] = 2.5;
+        // End: converge at telecentric focal point
+        rayPositions[i * 6 + 3] = Math.cos(angle) * 0.08;
+        rayPositions[i * 6 + 4] = Math.sin(angle) * 0.08;
+        rayPositions[i * 6 + 5] = -1.8;
+      }
+      const rayGeo = new THREE.BufferGeometry();
+      rayGeo.setAttribute('position', new THREE.BufferAttribute(rayPositions, 3));
+      const rayMat = new THREE.LineBasicMaterial({
+        color: 0x44ddff,
+        transparent: true,
+        opacity: 0.0,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        linewidth: 1,
+      });
+      // Build as line segments: each pair of points = one segment
+      const rayIndices = [];
+      for (let i = 0; i < rayCount; i++) rayIndices.push(i * 2, i * 2 + 1);
+      // Use LineSegments with index-less geometry (positions already in pairs)
+      // Rebuild as flat array of pairs
+      const pairPositions = new Float32Array(rayCount * 6);
+      for (let i = 0; i < rayCount; i++) {
+        pairPositions[i * 6 + 0] = rayPositions[i * 6 + 0];
+        pairPositions[i * 6 + 1] = rayPositions[i * 6 + 1];
+        pairPositions[i * 6 + 2] = rayPositions[i * 6 + 2];
+        pairPositions[i * 6 + 3] = rayPositions[i * 6 + 3];
+        pairPositions[i * 6 + 4] = rayPositions[i * 6 + 4];
+        pairPositions[i * 6 + 5] = rayPositions[i * 6 + 5];
+      }
+      const pairGeo = new THREE.BufferGeometry();
+      pairGeo.setAttribute('position', new THREE.BufferAttribute(pairPositions, 3));
+      const opticalRays = new THREE.LineSegments(pairGeo, rayMat);
+      heroScene.add(opticalRays);
+
+      // ── SYSTEM 3: Cinema Focus Calibration Grid ──────────────────────────────
+      let calibGridVisible = false;
+      const calibGridLines = [];
+      const calibGridGroup = new THREE.Group();
+      // Build a cross-hair grid (5x5 lines each axis = 10 line segments)
+      const gridSize = 2.0;
+      const gridDivs = 6;
+      const calibMat = new THREE.LineBasicMaterial({
+        color: 0x44ffaa,
+        transparent: true,
+        opacity: 0.72,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+      for (let g = 0; g <= gridDivs; g++) {
+        const t = (g / gridDivs - 0.5) * gridSize * 2;
+        // Horizontal line
+        const hg = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(-gridSize, t, 0),
+          new THREE.Vector3(gridSize, t, 0),
+        ]);
+        calibGridGroup.add(new THREE.Line(hg, calibMat));
+        // Vertical line
+        const vg = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(t, -gridSize, 0),
+          new THREE.Vector3(t, gridSize, 0),
+        ]);
+        calibGridGroup.add(new THREE.Line(vg, calibMat));
+      }
+      calibGridGroup.visible = false;
+      calibGridGroup.position.z = -0.5;
+      heroScene.add(calibGridGroup);
+
+      // Calibration button event
+      const calibBtn = document.getElementById('calibrationGridBtn');
+      if (calibBtn) {
+        calibBtn.addEventListener('click', () => {
+          calibGridVisible = !calibGridVisible;
+          calibGridGroup.visible = calibGridVisible;
+          calibBtn.classList.toggle('border-white', calibGridVisible);
+          calibBtn.classList.toggle('text-white', calibGridVisible);
+          const calibLabel = document.getElementById('calibBtnText');
+          if (calibLabel) calibLabel.textContent = calibGridVisible ? 'GRID ON' : 'CALIB GRID';
+          playMechanicalClick(calibGridVisible ? 2000 : 1400, 0.03);
+        });
+      }
+
+      // Track flare state
+      let flareTime = 0;
+      let raysVisible = false;
+      const raysBtn = document.getElementById('opticalRaysBtn');
+      if (raysBtn) {
+        raysBtn.addEventListener('click', () => {
+          raysVisible = !raysVisible;
+          raysBtn.classList.toggle('border-white', raysVisible);
+          raysBtn.classList.toggle('text-white', raysVisible);
+          const raysLabel = document.getElementById('raysBtnText');
+          if (raysLabel) raysLabel.textContent = raysVisible ? 'RAYS ON' : 'OPT RAYS';
+          playMechanicalClick(raysVisible ? 1800 : 1300, 0.03);
+        });
+      }
+
       // Delta Clamped Animation Loop
       const clock = new THREE.Clock();
 
@@ -1673,6 +1840,50 @@
           posArray[i * 3 + 2] += velocities[i * 3 + 2];
         }
         posAttr.needsUpdate = true;
+
+
+        // ── SYSTEM 1: Animate Anamorphic Flare based on rotation angle ─────────
+        flareTime += delta;
+        const rotAngle = Math.abs(lensMasterGroup.rotation.y);
+        const flareIntensity = Math.pow(Math.max(0, Math.cos(rotAngle * 2.5)), 4) * 0.88;
+        anamorphicMat.opacity = flareIntensity * (0.6 + 0.4 * Math.sin(flareTime * 3.2));
+        anamorphicMat2.opacity = flareIntensity * (0.4 + 0.3 * Math.sin(flareTime * 2.7 + 1.2));
+        anamorphicStreak.scale.x = 0.7 + flareIntensity * 0.6;
+        anamorphicStreak2.scale.x = 0.5 + flareIntensity * 0.5;
+        // Caustic iridescent bezel rings
+        causticRings.forEach((r, i) => {
+          r.material.opacity = flareIntensity * (0.35 + 0.25 * Math.sin(flareTime * (1.8 + i * 0.7) + i));
+          r.rotation.z = flareTime * (0.4 + i * 0.15);
+        });
+
+        // ── SYSTEM 2: Optical Ray Bundle (when raysVisible) ───────────────────
+        if (raysVisible) {
+          const rayPosArr = opticalRays.geometry.attributes.position.array;
+          const apertureFactor = 0.4 + (currentApertureIndex / apertureFStops.length) * 0.65;
+          for (let ri = 0; ri < rayCount; ri++) {
+            const angle = (ri / rayCount) * Math.PI * 2;
+            const r_in = 1.6 * apertureFactor;
+            const refractShift = explodedProgress * 0.3;
+            rayPosArr[ri * 6 + 0] = Math.cos(angle) * r_in;
+            rayPosArr[ri * 6 + 1] = Math.sin(angle) * r_in;
+            rayPosArr[ri * 6 + 2] = 2.5 - refractShift;
+            rayPosArr[ri * 6 + 3] = Math.cos(angle) * 0.06 + Math.sin(flareTime * 2 + ri) * 0.04 * apertureFactor;
+            rayPosArr[ri * 6 + 4] = Math.sin(angle) * 0.06 + Math.cos(flareTime * 2 + ri) * 0.04 * apertureFactor;
+            rayPosArr[ri * 6 + 5] = -1.8 + refractShift * 0.5;
+          }
+          opticalRays.geometry.attributes.position.needsUpdate = true;
+          rayMat.opacity = 0.55 + 0.2 * Math.sin(flareTime * 4.0);
+        } else {
+          rayMat.opacity += (0.0 - rayMat.opacity) * 0.12;
+        }
+
+        // ── SYSTEM 3: Calibration Grid pulsing + position at focus distance ───
+        if (calibGridVisible) {
+          const focusZ = [-0.1, -0.3, -0.6, -0.9, -1.3][focusDistanceIndex] || -0.5;
+          calibGridGroup.position.z += (focusZ - calibGridGroup.position.z) * 0.08;
+          calibMat.opacity = 0.55 + 0.35 * Math.sin(flareTime * 2.1);
+          calibGridGroup.rotation.z = flareTime * 0.08;
+        }
 
         heroRenderer.render(heroScene, heroCamera);
       }
@@ -1790,11 +2001,19 @@
         }
       });
 
+      // ── SYSTEM 5 state: Inertial Vertex Curvature Physics ─────────────────
+      let spatialPrevScroll = 0;
+      let spatialVelocity = 0;
+      let spatialWarpTime = 0;
+
       function animateSpatial() {
         requestAnimationFrame(animateSpatial);
         if (!isSpatialMode) return;
 
+        const prevProgress = spatialScrollProgress;
         spatialScrollProgress += (spatialTargetScroll - spatialScrollProgress) * 0.08;
+        spatialVelocity = spatialScrollProgress - prevProgress;
+        spatialWarpTime += 0.016;
 
         spatialQuads.forEach((mesh, i) => {
           const total = spatialQuads.length;
@@ -1803,6 +2022,21 @@
           mesh.position.x = Math.sin(currentAngle) * radius;
           mesh.position.z = Math.cos(currentAngle) * radius;
           mesh.rotation.y = currentAngle + Math.PI;
+
+          // ── System 5: Inertial parabolic vertex curvature ──────────────────
+          const geo = mesh.geometry;
+          if (geo && geo.attributes && geo.attributes.position) {
+            const posArr = geo.attributes.position.array;
+            const vCount = posArr.length / 3;
+            for (let v = 0; v < vCount; v++) {
+              const lx = posArr[v * 3];
+              const ly = posArr[v * 3 + 1];
+              // z displacement: parabolic wave based on scroll velocity
+              const warp = Math.sin(baseAngle + spatialWarpTime * 2.5 + lx * 0.4) * spatialVelocity * 2.2;
+              posArr[v * 3 + 2] = warp;
+            }
+            geo.attributes.position.needsUpdate = true;
+          }
         });
 
         spatialRenderer.render(spatialScene, spatialCamera);
@@ -2097,10 +2331,59 @@
         playMechanicalClick(1300, 0.03);
       };
 
+
+      // ── SYSTEM 4: Cinematic Room Tour Spline ─────────────────────────────────
+      let isTourActive = false;
+      let tourProgress = 0;
+      const tourDuration = 6.5; // seconds
+      const tourCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 0.5, 8.5),     // Front elevation
+        new THREE.Vector3(5.0, -1.0, 5.5),  // Right low angle
+        new THREE.Vector3(4.5, 2.0, 2.0),   // High right
+        new THREE.Vector3(0, 2.8, 2.5),     // Top center overhead
+        new THREE.Vector3(-4.5, 1.5, 3.0),  // High left
+        new THREE.Vector3(-4.0, -0.8, 6.0), // Low left
+        new THREE.Vector3(0, 0.5, 8.5),     // Return front
+      ], true); // closed curve
+
+      const tourBtn = document.getElementById('tourRoomBtn');
+      if (tourBtn) {
+        tourBtn.addEventListener('click', () => {
+          isTourActive = !isTourActive;
+          tourProgress = 0;
+          tourBtn.textContent = isTourActive ? 'CANCEL TOUR' : 'TOUR ROOM';
+          tourBtn.classList.toggle('border-white', isTourActive);
+          tourBtn.classList.toggle('text-white', isTourActive);
+          playMechanicalClick(isTourActive ? 1700 : 1200, 0.04);
+        });
+      }
+      // Cancel tour on user drag
+      const roomEl = document.getElementById('room3dContainer');
+      if (roomEl) {
+        roomEl.addEventListener('pointerdown', () => {
+          if (isTourActive) {
+            isTourActive = false;
+            if (tourBtn) { tourBtn.textContent = 'TOUR ROOM'; tourBtn.classList.remove('border-white', 'text-white'); }
+          }
+        });
+      }
+
+      const roomClock = new THREE.Clock();
+
       function animateRoom() {
         requestAnimationFrame(animateRoom);
-        roomCamera.position.x += (roomTargetRotY * 3.5 - roomCamera.position.x) * 0.06;
-        roomCamera.position.y += (-roomTargetRotX * 2.0 - roomCamera.position.y) * 0.06;
+        const rdelta = Math.min(roomClock.getDelta(), 0.05);
+        if (isTourActive) {
+          tourProgress += rdelta / tourDuration;
+          if (tourProgress >= 1.0) { tourProgress = 0; isTourActive = false; if (tourBtn) { tourBtn.textContent = 'TOUR ROOM'; tourBtn.classList.remove('border-white', 'text-white'); } }
+          const pt = tourCurve.getPoint(tourProgress);
+          roomCamera.position.x += (pt.x - roomCamera.position.x) * 0.07;
+          roomCamera.position.y += (pt.y - roomCamera.position.y) * 0.07;
+          roomCamera.position.z += (pt.z - roomCamera.position.z) * 0.07;
+        } else {
+          roomCamera.position.x += (roomTargetRotY * 3.5 - roomCamera.position.x) * 0.06;
+          roomCamera.position.y += (-roomTargetRotX * 2.0 - roomCamera.position.y) * 0.06;
+        }
         roomCamera.lookAt(0, 0, 0);
 
         // Animate room light motes
