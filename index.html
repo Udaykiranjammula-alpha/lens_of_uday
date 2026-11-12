@@ -155,6 +155,28 @@
       border-radius: 8px;
     }
 
+    /* 3D Holographic Perspective Card Tilt & Museum Anti-Reflective Glare */
+    .photo-card-tilt {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      transition: transform 400ms var(--ease-base), border-color 300ms var(--ease-base);
+      position: relative;
+    }
+    .card-glare {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.14) 0%, transparent 65%);
+      opacity: 0;
+      transition: opacity 300ms var(--ease-base);
+      mix-blend-mode: overlay;
+      border-radius: 16px;
+      z-index: 2;
+    }
+    .photo-card-tilt:hover .card-glare {
+      opacity: 1;
+    }
+
     /* Custom scrollbar */
     ::-webkit-scrollbar {
       width: 8px;
@@ -197,6 +219,9 @@
       }
       .tagline-word {
         color: #FFFFFF !important;
+      }
+      .photo-card-tilt {
+        transform: none !important;
       }
     }
   </style>
@@ -271,7 +296,7 @@
 
   <!-- FLOATING NAVIGATION BAR (B7 Motion & Translucent Floating Pill) -->
   <header class="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
-    <nav class="pointer-events-auto flex items-center justify-between gap-6 px-4 py-2 rounded-full border border-dark-border bg-dark-surface/85 backdrop-blur-md shadow-2xl transition-all duration-300 max-w-4xl w-full">
+    <nav class="pointer-events-auto flex items-center justify-between gap-6 px-4 py-2 rounded-full border border-dark-border bg-dark-surface/85 backdrop-blur-md shadow-2xl transition-all duration-300 max-w-5xl w-full">
       
       <!-- Brand Wordmark -->
       <a href="#" class="flex items-center gap-2 group text-white no-underline">
@@ -290,8 +315,15 @@
         <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
       </div>
 
-      <!-- Action Buttons -->
-      <div class="flex items-center gap-3">
+      <!-- Action Buttons with Sound Toggle -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- Procedural Audio Toggle Button -->
+        <button id="soundToggleBtn" aria-label="Toggle mechanical camera audio" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-dark-border bg-dark-card text-xs font-mono text-neutral-400 hover:text-white hover:border-neutral-500 transition-all">
+          <i class="ph ph-speaker-slash text-neutral-400" id="soundIcon"></i>
+          <span id="soundText">SOUND OFF</span>
+        </button>
+
         <button id="spatialToggleBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-dark-border bg-dark-card text-xs font-semibold text-neutral-300 hover:text-white hover:border-neutral-500 transition-all">
           <i class="ph ph-cube text-neutral-400"></i>
           <span id="spatialToggleText">3D Spatial View</span>
@@ -514,7 +546,7 @@
           </div>
         </div>
 
-        <!-- CURATED GRID VIEW (High Performance Responsive Masonry) -->
+        <!-- CURATED GRID VIEW (High Performance 3D Perspective Card Tilt & Museum Glass) -->
         <div id="gridGalleryViewport" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Populated dynamically via loadGalleryData() -->
         </div>
@@ -522,7 +554,7 @@
       </div>
     </section>
 
-    <!-- MODULE 3: 3D GALLERY WALL ROOM SIMULATOR (Art in Context) -->
+    <!-- MODULE 3: 3D GALLERY WALL ROOM SIMULATOR WITH VOLUMETRIC SPOTLIGHT -->
     <section id="simulator" class="py-20 px-6 border-b border-dark-border bg-dark-surface">
       <div class="max-w-6xl mx-auto">
         
@@ -535,14 +567,14 @@
             Visualize scale in quiet spaces
           </h2>
           <p class="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
-            Experience how any archival edition lives on a gallery wall with realistic 3D lighting conditions and bespoke frame finishes.
+            Experience how any archival edition lives on a gallery wall with realistic 3D volumetric lighting and bespoke frame finishes.
           </p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           <!-- 3D Room WebGL Viewport -->
-          <div class="lg:col-span-8 w-full h-[440px] sm:h-[500px] rounded-2xl border border-dark-border bg-black relative overflow-hidden flex flex-col">
+          <div class="lg:col-span-8 w-full h-[440px] sm:h-[520px] rounded-2xl border border-dark-border bg-black relative overflow-hidden flex flex-col">
             <div id="room3dContainer" class="w-full h-full relative cursor-grab active:cursor-grabbing">
               <!-- Three.js 3D Room Injected Here -->
             </div>
@@ -553,7 +585,7 @@
 
             <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-neutral-400 bg-dark-card/80 backdrop-blur-md px-4 py-2 rounded-lg border border-dark-border pointer-events-none">
               <span>DRAG TO PAN ROOM PERSPECTIVE</span>
-              <span id="roomLightingIndicator">GALLERY SPOTLIGHT</span>
+              <span id="roomLightingIndicator">VOLUMETRIC SPOTLIGHT</span>
             </div>
           </div>
 
@@ -991,7 +1023,7 @@
     </div>
   </footer>
 
-  <!-- SCRIPT LOGIC: Data Loading, Advanced Three.js Engines, Exploded Anatomy, Room Simulator, Lightbox -->
+  <!-- SCRIPT LOGIC: Data Loading, Procedural Audio Engine, Three.js 3D Optics, Room Simulator, Lightbox -->
   <script>
     let photoData = [];
     let activeCategory = 'all';
@@ -999,7 +1031,93 @@
     let isSpatialMode = false;
     let currentRoomPhotoIndex = 0;
 
-    // Load dynamic photographs from photos.json with strict cache busting & Gaddamunugu normalization
+    // =================================================================
+    // INNOVATION 1: PROCEDURAL WEB AUDIO MICRO HAPTICS (ZERO ASSETS)
+    // =================================================================
+    let audioCtx = null;
+    let isAudioEnabled = false;
+
+    function initAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleSound() {
+      initAudioContext();
+      isAudioEnabled = !isAudioEnabled;
+      const soundIcon = document.getElementById('soundIcon');
+      const soundText = document.getElementById('soundText');
+      if (isAudioEnabled) {
+        if (soundIcon) {
+          soundIcon.classList.remove('ph-speaker-slash');
+          soundIcon.classList.add('ph-speaker-high');
+        }
+        if (soundText) soundText.textContent = 'SOUND ON';
+        playMechanicalClick(1400, 0.04);
+      } else {
+        if (soundIcon) {
+          soundIcon.classList.remove('ph-speaker-high');
+          soundIcon.classList.add('ph-speaker-slash');
+        }
+        if (soundText) soundText.textContent = 'SOUND OFF';
+      }
+    }
+
+    const soundBtn = document.getElementById('soundToggleBtn');
+    if (soundBtn) soundBtn.addEventListener('click', toggleSound);
+
+    // Mechanical click generator
+    function playMechanicalClick(freq = 1400, decay = 0.035) {
+      if (!isAudioEnabled || !audioCtx) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(160, audioCtx.currentTime + decay);
+        gain.gain.setValueAtTime(0.16, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + decay);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + decay);
+      } catch (e) {}
+    }
+
+    // Realistic two stage shutter release sound
+    function playShutterRelease() {
+      if (!isAudioEnabled || !audioCtx) return;
+      try {
+        playMechanicalClick(1800, 0.038);
+        setTimeout(() => {
+          playMechanicalClick(920, 0.055);
+        }, 55);
+      } catch (e) {}
+    }
+
+    function playApertureDetent() {
+      if (!isAudioEnabled || !audioCtx) return;
+      playMechanicalClick(2300, 0.022);
+    }
+
+    function playFocusTick() {
+      if (!isAudioEnabled || !audioCtx) return;
+      playMechanicalClick(850, 0.014);
+    }
+
+    // Initialize audio context on first pointer gesture
+    window.addEventListener('pointerdown', () => {
+      if (!audioCtx) initAudioContext();
+    }, { once: true });
+
+    // =================================================================
+    // DATA LOADING & STRICT GADDAMUNUGU NORMALIZATION
+    // =================================================================
     async function loadPhotographs() {
       try {
         const res = await fetch('photos.json?v=' + Date.now(), { cache: 'no-store' });
@@ -1024,7 +1142,7 @@
       }
     }
 
-    // Render Grid View
+    // Render Grid View with 3D Holographic Perspective Tilt & Museum Glass
     function renderGrid() {
       const container = document.getElementById('gridGalleryViewport');
       if (!container) return;
@@ -1036,18 +1154,19 @@
       container.innerHTML = filtered.map((photo, idx) => {
         const globalIndex = photoData.indexOf(photo);
         return `
-          <article class="flat-card overflow-hidden group cursor-pointer" onclick="openLightbox(${globalIndex})">
+          <article class="flat-card photo-card-tilt overflow-hidden group cursor-pointer" onclick="openLightbox(${globalIndex})">
+            <div class="card-glare"></div>
             <div class="relative aspect-[4/3] overflow-hidden bg-dark-card">
               <img 
                 src="${photo.src}" 
-                alt="${photo.title} by Udaykiran Jammula"
+                alt="${photo.title} captured in Gaddamunugu by Udaykiran Jammula"
                 loading="lazy"
                 decoding="async"
                 class="w-full h-full object-cover transition-transform duration-500 ease-base group-hover:scale-105"
               />
-              <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <span class="px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-dark-border text-xs font-semibold text-white flex items-center gap-1.5">
-                  <i class="ph ph-magnifying-glass-plus"></i> Inspect
+              <div class="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span class="px-3 py-1.5 rounded-full bg-black/85 backdrop-blur-md border border-dark-border text-xs font-semibold text-white flex items-center gap-1.5">
+                  <i class="ph ph-magnifying-glass-plus"></i> Inspect Frame
                 </span>
               </div>
             </div>
@@ -1057,13 +1176,38 @@
                 <span class="text-xs text-neutral-400 font-mono">${photo.year || '2025'}</span>
               </div>
               <div class="flex items-center justify-between text-xs text-neutral-400 font-mono">
-                <span>${photo.location || 'Gaddamunugu, India'}</span>
+                <span>${photo.location}</span>
                 <span>${photo.category}</span>
               </div>
             </div>
           </article>
         `;
       }).join('');
+
+      initCardTiltPhysics();
+    }
+
+    // Interactive 3D Card Tilt with Anti-Reflective Glare Tracking
+    function initCardTiltPhysics() {
+      document.querySelectorAll('.photo-card-tilt').forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -9.5;
+          const rotateY = ((x - centerX) / centerX) * 9.5;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+          card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
+          card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        });
+      });
     }
 
     // Category Filtering
@@ -1078,6 +1222,7 @@
 
         activeCategory = btn.dataset.category;
         renderGrid();
+        playMechanicalClick(1600, 0.02);
       });
     });
 
@@ -1120,10 +1265,12 @@
         content.classList.remove('hidden');
         icon.classList.remove('ph-plus');
         icon.classList.add('ph-minus');
+        playMechanicalClick(1200, 0.02);
       } else {
         content.classList.add('hidden');
         icon.classList.remove('ph-minus');
         icon.classList.add('ph-plus');
+        playMechanicalClick(950, 0.02);
       }
     }
 
@@ -1133,11 +1280,12 @@
       const success = document.getElementById('formSuccessMessage');
       if (success) {
         success.classList.remove('hidden');
+        playShutterRelease();
         e.target.reset();
       }
     }
 
-    // Lightbox Control
+    // Lightbox Control with Mechanical Shutter Sound
     function openLightbox(index) {
       currentLightboxIndex = index;
       updateLightbox();
@@ -1145,6 +1293,7 @@
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       document.body.style.overflow = 'hidden';
+      playShutterRelease();
     }
 
     function closeLightbox() {
@@ -1152,11 +1301,13 @@
       modal.classList.add('hidden');
       modal.classList.remove('flex');
       document.body.style.overflow = '';
+      playMechanicalClick(1100, 0.03);
     }
 
     function navigateLightbox(dir) {
       currentLightboxIndex = (currentLightboxIndex + dir + photoData.length) % photoData.length;
       updateLightbox();
+      playMechanicalClick(1400, 0.025);
     }
 
     function updateLightbox() {
@@ -1187,6 +1338,7 @@
           currentRoomPhotoIndex = currentLightboxIndex;
           updateRoomArtwork();
           window.location.hash = '#simulator';
+          playMechanicalClick(1700, 0.03);
         };
       }
     }
@@ -1215,7 +1367,7 @@
     }
 
     // =================================================================
-    // MODULE 1, 2, 4: ADVANCED THREE.JS HERO 3D OPTICS & EXPLODED ANATOMY
+    // THREE.JS HERO 3D OPTICS: CHROMATIC DISPERSION & MULTI COATING
     // =================================================================
     let heroRenderer, heroScene, heroCamera, lensMasterGroup;
     let targetRotationX = 0, targetRotationY = 0;
@@ -1251,18 +1403,18 @@
       heroRenderer.setSize(width, height);
       heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       heroRenderer.toneMapping = THREE.ACESFilmicToneMapping;
-      heroRenderer.toneMappingExposure = 1.1;
+      heroRenderer.toneMappingExposure = 1.15;
       container.appendChild(heroRenderer.domElement);
 
       // Studio Three Point Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
       heroScene.add(ambientLight);
 
-      const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 2.5);
       keyLight.position.set(5, 6, 5);
       heroScene.add(keyLight);
 
-      const rimLight = new THREE.DirectionalLight(0x9b9b9b, 1.8);
+      const rimLight = new THREE.DirectionalLight(0xa5b4fc, 1.9); // Subtle optical blue rim
       rimLight.position.set(-6, -4, -4);
       heroScene.add(rimLight);
 
@@ -1305,7 +1457,7 @@
       groupBarrel.add(bezelMesh);
       lensMasterGroup.add(groupBarrel);
 
-      // Subgroup 2: Front Aspherical Glass Element
+      // Subgroup 2: Front Aspherical Glass Element with Multi-Coating Glint
       groupFrontElement = new THREE.Group();
       const frontGlassGeo = new THREE.SphereGeometry(2.0, 32, 16, 0, Math.PI * 2, 0, Math.PI / 3);
       const glassMat = new THREE.MeshPhysicalMaterial({
@@ -1314,13 +1466,27 @@
         opacity: 1,
         transparent: true,
         roughness: 0.04,
-        ior: 1.52,
-        reflectivity: 0.85,
+        ior: 1.54,
+        reflectivity: 0.88,
         clearcoat: 1.0,
+        clearcoatRoughness: 0.08,
       });
       const frontGlass = new THREE.Mesh(frontGlassGeo, glassMat);
       frontGlass.position.z = 1.0;
       groupFrontElement.add(frontGlass);
+
+      // Multi-Coating Emerald / Violet Glare Halo Ring
+      const coatingRingGeo = new THREE.TorusGeometry(2.03, 0.04, 16, 64);
+      const coatingMat = new THREE.MeshBasicMaterial({
+        color: 0x44ffaa,
+        transparent: true,
+        opacity: 0.32,
+        blending: THREE.AdditiveBlending,
+      });
+      const coatingRing = new THREE.Mesh(coatingRingGeo, coatingMat);
+      coatingRing.position.z = 1.05;
+      groupFrontElement.add(coatingRing);
+
       lensMasterGroup.add(groupFrontElement);
 
       // Subgroup 3: Cemented Doublet Lens Group
@@ -1372,7 +1538,7 @@
 
       heroScene.add(lensMasterGroup);
 
-      // MODULE 2: Atmospheric Light Motes (Instanced Particles)
+      // Atmospheric Light Motes (Instanced Particles)
       const particleCount = 280;
       const particleGeo = new THREE.BufferGeometry();
       const positions = new Float32Array(particleCount * 3);
@@ -1431,13 +1597,17 @@
 
       window.addEventListener('pointerup', () => { isDragging = false; });
 
-      // Wheel interaction changes focus distance scale
+      // Wheel interaction changes focus distance scale with haptic click
       container.addEventListener('wheel', (e) => {
         e.preventDefault();
+        const prevIdx = focusDistanceIndex;
         if (e.deltaY > 0) {
           focusDistanceIndex = Math.min(focusDistances.length - 1, focusDistanceIndex + 1);
         } else {
           focusDistanceIndex = Math.max(0, focusDistanceIndex - 1);
+        }
+        if (prevIdx !== focusDistanceIndex) {
+          playFocusTick();
         }
         const distLabel = document.getElementById('focusDistanceDisplay');
         if (distLabel) distLabel.textContent = `DIST: ${focusDistances[focusDistanceIndex]}`;
@@ -1453,6 +1623,7 @@
           if (explodeBtnText) {
             explodeBtnText.textContent = isExploded ? 'ASSEMBLE LENS' : 'EXPLODE ANATOMY';
           }
+          playMechanicalClick(isExploded ? 1600 : 1200, 0.04);
         });
       }
 
@@ -1470,6 +1641,7 @@
             const angle = (i / 9) * Math.PI * 2;
             b.position.set(Math.cos(angle) * (0.65 * openness), Math.sin(angle) * (0.65 * openness), 0);
           });
+          playApertureDetent();
         });
       }
 
@@ -1669,6 +1841,7 @@
         }
         if (navSpatialBtn) navSpatialBtn.textContent = '3D Spatial View';
       }
+      playMechanicalClick(1500, 0.03);
     }
 
     const toggleBtn = document.getElementById('viewModeToggle');
@@ -1681,14 +1854,15 @@
     });
 
     // =================================================================
-    // MODULE 3: 3D ARCHITECTURAL GALLERY WALL ROOM SIMULATOR
+    // 3D ARCHITECTURAL ROOM SIMULATOR WITH VOLUMETRIC SPOTLIGHT
     // =================================================================
     let roomRenderer, roomScene, roomCamera;
     let roomFrameMesh, roomPictureMesh;
-    let roomSpotlight, roomSunlight, roomDuskLight;
+    let roomSpotlight, roomSunlight, roomDuskLight, volumetricLightCone;
     let currentFrameFinish = 'teak'; // 'teak', 'black', 'raw'
     let currentLightingPreset = 'spot'; // 'spot', 'sun', 'dusk'
     let roomTargetRotY = 0, roomTargetRotX = 0;
+    let roomMotesMesh;
 
     function init3DRoomSimulator() {
       const container = document.getElementById('room3dContainer');
@@ -1722,12 +1896,12 @@
       wallMesh.receiveShadow = true;
       roomScene.add(wallMesh);
 
-      // Floor Plane
+      // Floor Plane with Semi Specular Reflection
       const floorGeo = new THREE.PlaneGeometry(12, 8);
       const floorMat = new THREE.MeshStandardMaterial({
-        color: 0x121212,
-        roughness: 0.4,
-        metalness: 0.2,
+        color: 0x131313,
+        roughness: 0.32,
+        metalness: 0.35,
       });
       const floorMesh = new THREE.Mesh(floorGeo, floorMat);
       floorMesh.rotation.x = -Math.PI / 2;
@@ -1741,7 +1915,7 @@
       // Outer Frame
       const frameGeo = new THREE.BoxGeometry(2.8, 1.9, 0.1);
       const frameMat = new THREE.MeshStandardMaterial({
-        color: 0x8b5a2b, // Teak
+        color: 0x8b5a2b, // Natural Teak
         roughness: 0.6,
         metalness: 0.1,
       });
@@ -1749,15 +1923,17 @@
       roomFrameMesh.castShadow = true;
       frameGroup.add(roomFrameMesh);
 
-      // Inner Photographic Canvas
+      // Inner Photographic Canvas with Museum Glass Specular Glint
       const picGeo = new THREE.PlaneGeometry(2.5, 1.6);
       const textureLoader = new THREE.TextureLoader();
       const initialSrc = photoData[0] ? photoData[0].src : 'photos/other/post1.jpg';
       const picTex = textureLoader.load(initialSrc);
-      const picMat = new THREE.MeshStandardMaterial({
+      const picMat = new THREE.MeshPhysicalMaterial({
         map: picTex,
-        roughness: 0.2,
-        metalness: 0.05,
+        roughness: 0.15,
+        reflectivity: 0.75,
+        clearcoat: 0.9,
+        clearcoatRoughness: 0.1,
       });
       roomPictureMesh = new THREE.Mesh(picGeo, picMat);
       roomPictureMesh.position.z = 0.052;
@@ -1766,17 +1942,52 @@
       roomScene.add(frameGroup);
 
       // Lighting Systems
-      const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+      const ambient = new THREE.AmbientLight(0xffffff, 0.38);
       roomScene.add(ambient);
 
       // 1. Gallery Spotlight (focused cone with shadow)
-      roomSpotlight = new THREE.SpotLight(0xfffaed, 3.2, 10, Math.PI / 5, 0.4, 1.2);
+      roomSpotlight = new THREE.SpotLight(0xfffaed, 3.4, 10, Math.PI / 5, 0.42, 1.2);
       roomSpotlight.position.set(0, 3.2, 2.5);
       roomSpotlight.target = frameGroup;
       roomSpotlight.castShadow = true;
       roomSpotlight.shadow.mapSize.width = 1024;
       roomSpotlight.shadow.mapSize.height = 1024;
       roomScene.add(roomSpotlight);
+
+      // 3D Volumetric Light Cone
+      const coneGeo = new THREE.CylinderGeometry(0.28, 1.7, 3.4, 32, 1, true);
+      const coneMat = new THREE.MeshBasicMaterial({
+        color: 0xfffaed,
+        transparent: true,
+        opacity: 0.1,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+      volumetricLightCone = new THREE.Mesh(coneGeo, coneMat);
+      volumetricLightCone.position.set(0, 1.5, 1.25);
+      volumetricLightCone.rotation.x = -Math.PI / 10;
+      roomScene.add(volumetricLightCone);
+
+      // Room Atmospheric Particles
+      const roomMoteCount = 90;
+      const roomMoteGeo = new THREE.BufferGeometry();
+      const roomMotePos = new Float32Array(roomMoteCount * 3);
+      for (let i = 0; i < roomMoteCount; i++) {
+        roomMotePos[i * 3] = (Math.random() - 0.5) * 4.5;
+        roomMotePos[i * 3 + 1] = (Math.random() - 0.5) * 3.5;
+        roomMotePos[i * 3 + 2] = (Math.random() - 0.5) * 3.0 + 0.6;
+      }
+      roomMoteGeo.setAttribute('position', new THREE.BufferAttribute(roomMotePos, 3));
+      const roomMoteMat = new THREE.PointsMaterial({
+        color: 0xfffaed,
+        size: 0.04,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending,
+      });
+      roomMotesMesh = new THREE.Points(roomMoteGeo, roomMoteMat);
+      roomScene.add(roomMotesMesh);
 
       // 2. Sunlight
       roomSunlight = new THREE.DirectionalLight(0xffeedd, 0.0);
@@ -1832,6 +2043,7 @@
           } else if (currentFrameFinish === 'raw') {
             roomFrameMesh.visible = false;
           }
+          playMechanicalClick(1400, 0.03);
         });
       });
 
@@ -1849,21 +2061,25 @@
           const indicator = document.getElementById('roomLightingIndicator');
 
           if (currentLightingPreset === 'spot') {
-            roomSpotlight.intensity = 3.2;
+            roomSpotlight.intensity = 3.4;
             roomSunlight.intensity = 0.0;
             roomDuskLight.intensity = 0.0;
-            if (indicator) indicator.textContent = 'GALLERY SPOTLIGHT';
+            volumetricLightCone.visible = true;
+            if (indicator) indicator.textContent = 'VOLUMETRIC SPOTLIGHT';
           } else if (currentLightingPreset === 'sun') {
-            roomSpotlight.intensity = 1.0;
+            roomSpotlight.intensity = 0.8;
             roomSunlight.intensity = 2.8;
             roomDuskLight.intensity = 0.0;
+            volumetricLightCone.visible = false;
             if (indicator) indicator.textContent = 'MORNING SUNLIGHT';
           } else if (currentLightingPreset === 'dusk') {
-            roomSpotlight.intensity = 0.6;
+            roomSpotlight.intensity = 0.4;
             roomSunlight.intensity = 0.0;
-            roomDuskLight.intensity = 2.4;
+            roomDuskLight.intensity = 2.6;
+            volumetricLightCone.visible = false;
             if (indicator) indicator.textContent = 'TWILIGHT WARMTH';
           }
+          playMechanicalClick(1600, 0.03);
         });
       });
 
@@ -1873,10 +2089,12 @@
       if (nextBtn) nextBtn.onclick = () => {
         currentRoomPhotoIndex = (currentRoomPhotoIndex + 1) % photoData.length;
         updateRoomArtwork();
+        playMechanicalClick(1500, 0.03);
       };
       if (prevBtn) prevBtn.onclick = () => {
         currentRoomPhotoIndex = (currentRoomPhotoIndex - 1 + photoData.length) % photoData.length;
         updateRoomArtwork();
+        playMechanicalClick(1300, 0.03);
       };
 
       function animateRoom() {
@@ -1884,6 +2102,17 @@
         roomCamera.position.x += (roomTargetRotY * 3.5 - roomCamera.position.x) * 0.06;
         roomCamera.position.y += (-roomTargetRotX * 2.0 - roomCamera.position.y) * 0.06;
         roomCamera.lookAt(0, 0, 0);
+
+        // Animate room light motes
+        if (roomMotesMesh) {
+          const pos = roomMotesMesh.geometry.attributes.position.array;
+          for (let i = 0; i < roomMoteCount; i++) {
+            pos[i * 3 + 1] += 0.002;
+            if (pos[i * 3 + 1] > 2.0) pos[i * 3 + 1] = -2.0;
+          }
+          roomMotesMesh.geometry.attributes.position.needsUpdate = true;
+        }
+
         roomRenderer.render(roomScene, roomCamera);
       }
       animateRoom();
