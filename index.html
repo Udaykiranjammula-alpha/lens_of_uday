@@ -1,940 +1,1444 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>lensofuday — Udaykiran Jammula</title>
-  <meta name="description" content="Capturing nature, one frame at a time."/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lens of Uday — Archival Landscape Photography and Fine Art Prints</title>
+  <meta name="description" content="Original Indian landscape and nature photography by Udaykiran Jammula. Discover limited edition museum grade archival prints and commercial image licensing."/>
+  <meta name="author" content="Udaykiran Jammula"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://udaykiranjammula-alpha.github.io/lens_of_uday/"/>
 
+  <!-- Open Graph / Social Sharing -->
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://udaykiranjammula-alpha.github.io/lens_of_uday/"/>
+  <meta property="og:title" content="Lens of Uday — Archival Landscape Photography and Fine Art Prints"/>
+  <meta property="og:description" content="Original Indian landscape and nature photography by Udaykiran Jammula. Discover limited edition museum grade archival prints."/>
+  <meta property="og:image" content="photos/other/post1.jpg"/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:title" content="Lens of Uday — Archival Landscape Photography"/>
+  <meta name="twitter:description" content="Original Indian landscape and nature photography by Udaykiran Jammula."/>
+  <meta name="twitter:image" content="photos/other/post1.jpg"/>
+
+  <!-- Favicon: Geometric Camera Aperture -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><circle cx='16' cy='16' r='14' stroke='%23ffffff' stroke-width='2'/><circle cx='16' cy='16' r='6' stroke='%239b9b9b' stroke-width='1.5'/><line x1='16' y1='2' x2='22' y2='10' stroke='%23ffffff' stroke-width='1.5'/><line x1='30' y1='16' x2='22' y2='22' stroke='%23ffffff' stroke-width='1.5'/><line x1='16' y1='30' x2='10' y2='22' stroke='%23ffffff' stroke-width='1.5'/><line x1='2' y1='16' x2='10' y2='10' stroke='%23ffffff' stroke-width='1.5'/></svg>"/>
+
+  <!-- Typography: Manrope with Geist Mono for camera EXIF specifications -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@200;300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
-  <!-- Lenis Smooth Scroll -->
-  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+  <!-- Icons: Phosphor Icons only (No Material Icons) -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-<style>
-/* ================================================================
-   RESET + TOKENS
-================================================================ */
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
-  --bg:#060606;--bg2:#0c0c0c;--bg3:#121212;--card:#111;
-  --t1:#f2ede6;--t2:#9a9590;--t3:#5c5854;
-  --acc:#c9a84c;--acc2:#e0c36a;--acc-g:rgba(201,168,76,.35);--acc-s:rgba(201,168,76,.1);
-  --brd:rgba(255,255,255,.05);--brd2:rgba(255,255,255,.1);
-  --r:14px;--rl:24px;
-}
-html{font-size:16px}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none}
-@media(max-width:768px){body{cursor:auto}}
-::selection{background:var(--acc);color:var(--bg)}
-img{display:block;max-width:100%}
-a{text-decoration:none;color:inherit}
-button{font-family:inherit;border:none;background:none;cursor:none}
-@media(max-width:768px){button,a{cursor:pointer}}
+  <!-- Three.js for 3D Camera Optics & Spatial Gallery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-/* ================================================================
-   CURSOR — MAGNETIC + MORPHING
-================================================================ */
-.cur{position:fixed;width:18px;height:18px;border-radius:50%;background:var(--acc);pointer-events:none;z-index:100001;transform:translate(-50%,-50%);transition:width .4s cubic-bezier(.175,.885,.32,1.275),height .4s cubic-bezier(.175,.885,.32,1.275),border-radius .4s,background .3s,opacity .3s;mix-blend-mode:difference}
-.cur.big{width:100px;height:100px;background:rgba(201,168,76,.08);border:1.5px solid var(--acc);mix-blend-mode:normal}
-.cur.view{width:100px;height:100px;background:rgba(201,168,76,.12);border:1.5px solid var(--acc);mix-blend-mode:normal}
-.cur-text{position:fixed;pointer-events:none;z-index:100002;font-size:.58rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--acc);transform:translate(-50%,-50%);opacity:0;transition:opacity .3s}
-.cur-text.show{opacity:1}
-@media(max-width:768px){.cur,.cur-text{display:none!important}}
+  <!-- Tailwind CSS CDN for styling with custom configuration -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope', 'sans-serif'],
+            mono: ['Geist Mono', 'monospace'],
+          },
+          colors: {
+            dark: {
+              base: '#000000',
+              surface: '#181818',
+              card: '#1F1F1F',
+              border: '#272727',
+              muted: '#313131',
+              accent: '#131209',
+            },
+          },
+          transitionTimingFunction: {
+            base: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          },
+          transitionDuration: {
+            500: '500ms',
+            300: '300ms',
+          },
+        },
+      },
+    };
+  </script>
 
-/* ================================================================
-   PRELOADER — CINEMATIC
-================================================================ */
-.pre{position:fixed;inset:0;z-index:100000;background:var(--bg);display:flex;flex-direction:column;justify-content:flex-end;padding:3rem;overflow:hidden}
-.pre-cols{position:absolute;inset:0;display:flex}
-.pre-col{flex:1;border-right:1px solid var(--brd)}
-.pre-col:last-child{border:none}
-.pre-top{position:absolute;top:3rem;left:3rem;right:3rem;display:flex;justify-content:space-between;align-items:flex-start}
-.pre-logo{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:600;color:var(--t1)}
-.pre-logo span{color:var(--acc)}
-.pre-loading{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--t3)}
-.pre-bottom{display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:1}
-.pre-num{font-family:'Space Grotesk',sans-serif;font-size:clamp(6rem,22vw,16rem);font-weight:700;line-height:.85;color:var(--t1);opacity:.12;font-variant-numeric:tabular-nums}
-.pre-bar{position:absolute;bottom:0;left:0;height:2px;background:var(--acc);width:0%;border-radius:2px}
-.pre-words{position:absolute;bottom:5rem;left:3rem;display:flex;flex-direction:column;gap:.3rem}
-.pre-word{font-family:'Playfair Display',serif;font-size:1rem;font-style:italic;color:var(--t3);opacity:0;transform:translateY(10px);transition:opacity .4s,transform .4s,color .4s}
-.pre-word.active{opacity:1;transform:translateY(0);color:var(--t2)}
+  <style>
+    /* Strict Skill Reset & Token Enforcement */
+    :root {
+      --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    * {
+      box-sizing: border-box;
+      font-style: normal !important; /* Zero italics anywhere in the interface */
+    }
+    body {
+      background-color: #000000;
+      color: #FFFFFF;
+      font-family: 'Manrope', sans-serif;
+      overflow-x: hidden;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-/* ================================================================
-   NAV
-================================================================ */
-.nav{position:fixed;top:0;left:0;right:0;z-index:9990;padding:2rem 3.5rem;display:flex;justify-content:space-between;align-items:center;transition:padding .4s,background .4s,backdrop-filter .4s}
-.nav.scroll{padding:1rem 3.5rem;background:rgba(6,6,6,.8);backdrop-filter:blur(20px);border-bottom:1px solid var(--brd)}
-.nav-brand{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:600;color:var(--t1)}
-.nav-brand span{color:var(--acc)}
-.nav-ul{display:flex;gap:2.5rem;list-style:none}
-.nav-ul a{font-size:.78rem;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--t2);position:relative;transition:color .3s}
-.nav-ul a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--acc);transition:width .4s cubic-bezier(.25,.46,.45,.94)}
-.nav-ul a:hover{color:var(--t1)}
-.nav-ul a:hover::after{width:100%}
-.nav-ham{display:none;width:28px;height:18px;position:relative}
-.nav-ham span{position:absolute;left:0;width:100%;height:1.5px;background:var(--t1);transition:.35s cubic-bezier(.77,0,.18,1)}
-.nav-ham span:nth-child(1){top:0}.nav-ham span:nth-child(2){top:50%;transform:translateY(-50%)}.nav-ham span:nth-child(3){bottom:0}
-.nav-ham.on span:nth-child(1){top:50%;transform:translateY(-50%) rotate(45deg)}.nav-ham.on span:nth-child(2){opacity:0;transform:translateY(-50%) scaleX(0)}.nav-ham.on span:nth-child(3){bottom:50%;transform:translateY(50%) rotate(-45deg)}
-@media(max-width:768px){.nav{padding:1.2rem 1.5rem}.nav-ul{display:none}.nav-ham{display:block}}
+    /* Headings balance, body pretty (No orphaned words) */
+    h1, h2, h3, h4, h5, h6 {
+      text-wrap: balance;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    p, li, span, label {
+      text-wrap: pretty;
+    }
 
-/* Fullscreen menu */
-.fmenu{position:fixed;inset:0;z-index:9989;background:var(--bg);display:flex;justify-content:center;align-items:center;clip-path:circle(0% at calc(100% - 2rem) 2rem);transition:clip-path .8s cubic-bezier(.77,0,.18,1)}
-.fmenu.on{clip-path:circle(150% at calc(100% - 2rem) 2rem)}
-.fmenu nav{text-align:center}
-.fmenu a{display:block;font-family:'Playfair Display',serif;font-size:clamp(2rem,7vw,4rem);font-weight:600;padding:.4rem 0;color:var(--t1);opacity:0;transform:translateY(40px);transition:opacity .5s,transform .5s,color .3s}
-.fmenu.on a{opacity:1;transform:translateY(0)}
-.fmenu.on a:nth-child(1){transition-delay:.15s}.fmenu.on a:nth-child(2){transition-delay:.25s}.fmenu.on a:nth-child(3){transition-delay:.35s}.fmenu.on a:nth-child(4){transition-delay:.45s}
-.fmenu a:hover{color:var(--acc)}
-.fmenu-foot{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-size:.7rem;color:var(--t3);letter-spacing:.1em}
+    /* Hero Heading Gradient: Left-to-right #FFFFFF -> #9B9B9B (Only place gradient text is used) */
+    .hero-heading-gradient {
+      background: linear-gradient(90deg, #FFFFFF 0%, #9B9B9B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
 
-/* ================================================================
-   CANVAS BACKGROUND (Particles / Constellations)
-================================================================ */
-#constellation{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.5}
+    /* Tagline Reveal Section (B11) */
+    .tagline-word {
+      display: inline-block;
+      color: #4B4B4B; /* ~30% muted tone */
+      transition: color 600ms var(--ease-base), opacity 600ms var(--ease-base);
+    }
+    .tagline-word.active {
+      color: #FFFFFF;
+    }
 
-/* ================================================================
-   HERO
-================================================================ */
-.hero{height:100vh;min-height:750px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
-.hero-bg{position:absolute;inset:-15%;z-index:1;will-change:transform}
-.hero-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(.2) saturate(.6);transform:scale(1.1)}
-.hero-over{position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(6,6,6,.4) 0%,transparent 25%,transparent 50%,rgba(6,6,6,.5) 75%,var(--bg) 100%)}
-/* Floating gradient orbs */
-.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.12;z-index:2;animation:orbFloat 15s ease-in-out infinite}
-.orb-1{width:500px;height:500px;background:var(--acc);top:10%;left:-10%;animation-delay:0s}
-.orb-2{width:400px;height:400px;background:#4a7cc9;bottom:5%;right:-8%;animation-delay:-5s}
-.orb-3{width:300px;height:300px;background:#c94a7c;top:50%;left:60%;animation-delay:-10s}
-@keyframes orbFloat{0%,100%{transform:translate(0,0)}25%{transform:translate(40px,-30px)}50%{transform:translate(-20px,40px)}75%{transform:translate(30px,20px)}}
+    /* Main buttons: 8px vertical padding, 12px horizontal padding */
+    .btn-main {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      padding-left: 12px;
+      padding-right: 12px;
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: transform 300ms var(--ease-base), background-color 300ms var(--ease-base), border-color 300ms var(--ease-base), opacity 300ms var(--ease-base);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-main:active {
+      transform: scale(0.98) translateY(1px);
+    }
+    .btn-main:focus-visible {
+      outline: 2px solid #FFFFFF;
+      outline-offset: 2px;
+    }
 
-.hero-ct{position:relative;z-index:3;text-align:center;padding:0 2rem}
+    /* Cards: 1px uniform border all around (#272727), flat background (#181818) */
+    .flat-card {
+      background-color: #181818;
+      border: 1px solid #272727;
+      border-radius: 16px;
+      transition: transform 500ms var(--ease-base), border-color 300ms var(--ease-base);
+    }
+    .flat-card:hover {
+      border-color: #313131;
+    }
 
-.hero-eye{display:inline-flex;align-items:center;gap:.8rem;margin-bottom:2.5rem;overflow:hidden}
-.hero-eye-line{width:40px;height:1px;background:var(--acc)}
-.hero-eye-text{font-size:.65rem;font-weight:500;letter-spacing:.3em;text-transform:uppercase;color:var(--acc);opacity:0;transform:translateX(-20px)}
+    /* Nested radius rule: outer rounded-2xl (16px), gap 8px -> inner rounded-lg (8px) */
+    .nested-inner {
+      border-radius: 8px;
+    }
 
-.hero-h{font-family:'Playfair Display',serif;font-size:clamp(3.5rem,11vw,10rem);font-weight:700;line-height:.92;letter-spacing:-.04em}
-.hero-h .line{display:block;overflow:hidden;position:relative}
-.hero-h .line-inner{display:block;transform:translateY(110%);will-change:transform}
-.hero-h .l2{color:var(--acc)}
-/* Stroke/outline effect on third line */
-.hero-h .l3{color:transparent;-webkit-text-stroke:1.5px var(--t2);font-style:italic;font-size:clamp(1.2rem,3.5vw,2.8rem);letter-spacing:.08em;margin-top:.5rem}
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #000000;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #272727;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #313131;
+    }
 
-.hero-sub{max-width:500px;margin:2.5rem auto 0;opacity:0;color:var(--t2);font-weight:300;line-height:1.8;font-size:clamp(.9rem,1.8vw,1.1rem)}
+    /* Accessibility Skip Link */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 16px;
+      background: #FFFFFF;
+      color: #000000;
+      padding: 8px 12px;
+      z-index: 100;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: top 300ms var(--ease-base);
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
 
-.hero-btns{display:flex;gap:1rem;justify-content:center;margin-top:2.5rem;opacity:0}
-.btn{padding:.9rem 2.4rem;border-radius:100px;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;transition:all .4s;display:inline-flex;align-items:center;gap:.6rem;position:relative;overflow:hidden}
-.btn-glow{background:var(--acc);color:var(--bg);border:1px solid var(--acc)}
-.btn-glow:hover{background:var(--acc2);box-shadow:0 0 40px var(--acc-g),0 0 80px rgba(201,168,76,.15);transform:translateY(-3px)}
-.btn-line{color:var(--t1);border:1px solid var(--brd2)}
-.btn-line:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-3px)}
-
-/* Magnetic button wrapper */
-.magnetic{display:inline-block;transition:transform .3s cubic-bezier(.25,.46,.45,.94)}
-
-.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:3;display:flex;flex-direction:column;align-items:center;gap:.6rem;opacity:0}
-.hero-scroll-text{font-size:.55rem;letter-spacing:.3em;text-transform:uppercase;color:var(--t3)}
-.hero-scroll-bar{width:1px;height:50px;background:var(--brd2);position:relative;overflow:hidden}
-.hero-scroll-bar::after{content:'';position:absolute;top:-100%;width:100%;height:50%;background:var(--acc);animation:scrollPulse 2.8s ease-in-out infinite}
-@keyframes scrollPulse{0%{top:-50%}50%{top:100%}100%{top:100%}}
-
-/* ================================================================
-   MARQUEE — Scroll-velocity reactive
-================================================================ */
-.marq{padding:2.5rem 0;border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);overflow:hidden;position:relative;z-index:1}
-.marq-track{display:flex;width:max-content;will-change:transform}
-.marq-item{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4.5vw,3.5rem);font-weight:300;white-space:nowrap;padding:0 1.5rem;color:var(--t3);display:flex;align-items:center;gap:1.5rem;transition:color .3s}
-.marq-item:hover{color:var(--t1)}
-.marq-dot{width:8px;height:8px;background:var(--acc);border-radius:50%;flex-shrink:0}
-
-/* ================================================================
-   ABOUT — with clip-path image reveal
-================================================================ */
-.about{padding:8rem 3.5rem;max-width:1400px;margin:0 auto;position:relative;z-index:1}
-.about::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(201,168,76,.04) 0%,transparent 70%);pointer-events:none}
-.about-row{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
-.about-img{position:relative;border-radius:var(--rl);overflow:hidden}
-.about-img img{width:100%;aspect-ratio:4/5;object-fit:cover;clip-path:inset(100% 0 0 0);transition:clip-path 0s}
-.about-img-border{position:absolute;inset:0;border:1px solid var(--brd2);border-radius:var(--rl);pointer-events:none;z-index:2}
-.about-img .tag{position:absolute;bottom:1.5rem;left:1.5rem;background:rgba(6,6,6,.85);backdrop-filter:blur(12px);border:1px solid var(--brd);border-radius:var(--r);padding:1rem 1.4rem;z-index:3}
-.about-img .tag-l{font-size:.58rem;letter-spacing:.15em;text-transform:uppercase;color:var(--t3)}
-.about-img .tag-v{font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:500;color:var(--acc);margin-top:.2rem}
-
-.about-lbl{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--acc);display:flex;align-items:center;gap:1rem}
-.about-lbl::before{content:'';width:30px;height:1px;background:var(--acc)}
-.about-h{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:600;line-height:1.2;margin-top:1.2rem}
-.about-h em{font-style:italic;color:var(--acc)}
-.about-p{color:var(--t2);font-weight:300;line-height:1.9;font-size:.98rem;margin-top:2rem}
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2.5rem;padding-top:2.5rem;border-top:1px solid var(--brd)}
-.ai-l{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--t3)}
-.ai-v{font-size:.92rem;color:var(--t1);margin-top:.3rem}
-.ai-v a{transition:color .3s}
-.ai-v a:hover{color:var(--acc)}
-@media(max-width:900px){.about{padding:6rem 1.5rem}.about-row{grid-template-columns:1fr;gap:3rem}}
-
-/* ================================================================
-   STATS
-================================================================ */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);position:relative;z-index:1}
-.st{text-align:center;padding:5rem 2rem;border-right:1px solid var(--brd);position:relative;overflow:hidden}
-.st:last-child{border:none}
-.st::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,var(--acc-s),transparent);transform:scaleY(0);transform-origin:bottom;transition:transform .6s cubic-bezier(.25,.46,.45,.94)}
-.st:hover::before{transform:scaleY(1)}
-.st-n{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.8rem,5.5vw,4rem);font-weight:700;position:relative;font-variant-numeric:tabular-nums}
-.st-n .plus{font-size:.6em;color:var(--acc);vertical-align:super;margin-left:2px}
-.st-l{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--t3);margin-top:.5rem;position:relative}
-@media(max-width:768px){.stats{grid-template-columns:1fr 1fr}.st:nth-child(2){border-right:none}}
-
-/* ================================================================
-   GALLERY
-================================================================ */
-.gal{padding:8rem 3.5rem;max-width:1500px;margin:0 auto;position:relative;z-index:1}
-.gal::before{content:'';position:absolute;top:10%;right:0;width:600px;height:600px;background:radial-gradient(circle,rgba(201,168,76,.03) 0%,transparent 70%);pointer-events:none}
-.gal-top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4rem;flex-wrap:wrap;gap:2rem}
-.gal-lbl{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--acc);display:flex;align-items:center;gap:1rem}
-.gal-lbl::before{content:'';width:30px;height:1px;background:var(--acc)}
-.gal-h{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3.2rem);font-weight:600;margin-top:.8rem}
-.flt{display:flex;gap:.4rem;flex-wrap:wrap}
-.flt-b{padding:.55rem 1.4rem;border:1px solid var(--brd);border-radius:100px;font-size:.73rem;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);transition:.35s}
-.flt-b:hover{border-color:var(--t2);color:var(--t2)}
-.flt-b.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}
-.gal-status{min-height:180px;display:flex;align-items:center;justify-content:center;text-align:center;border:1px solid var(--brd);border-radius:var(--r);color:var(--t3);font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;padding:2rem}
-.gal-status::before{content:'';width:20px;height:20px;border:2px solid var(--brd2);border-top-color:var(--acc);border-radius:50%;margin-right:.8rem;animation:gallerySpin .8s linear infinite}
-.gal-status.empty::before{display:none}
-@keyframes gallerySpin{to{transform:rotate(360deg)}}
-
-/* Masonry */
-.msnr{columns:3;column-gap:1.4rem}
-@media(max-width:1024px){.msnr{columns:2}}
-@media(max-width:600px){.msnr{columns:1}.gal{padding:6rem 1.5rem}}
-
-.gc{break-inside:avoid;margin-bottom:1.4rem;perspective:1000px;opacity:0;transform:translateY(60px)}
-.gc-in{position:relative;border-radius:var(--r);overflow:hidden;background:var(--card);transform-style:preserve-3d;will-change:transform;transition:box-shadow .5s}
-.gc-in:hover{box-shadow:0 25px 70px rgba(0,0,0,.5)}
-.gc-in img{width:100%;transition:transform .9s cubic-bezier(.25,.46,.45,.94),filter .5s}
-.gc-in:hover img{transform:scale(1.1);filter:brightness(1.05)}
-
-/* Advanced overlay with gradient + blur */
-.gc-ov{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;opacity:0;transition:opacity .4s}
-.gc-ov::before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,.8) 0%,rgba(0,0,0,.2) 40%,transparent 100%);z-index:0}
-.gc-in:hover .gc-ov{opacity:1}
-.gc-ov>*{position:relative;z-index:1}
-.gc-t{font-family:'Playfair Display',serif;font-size:1.1rem;color:#fff;transform:translateY(10px);transition:transform .5s cubic-bezier(.22,1,.36,1)}
-.gc-c{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--acc);margin-top:.3rem;transform:translateY(10px);transition:transform .5s cubic-bezier(.22,1,.36,1) .04s}
-.gc-in:hover .gc-t,.gc-in:hover .gc-c{transform:translateY(0)}
-.gc-v{position:absolute;top:.8rem;right:.8rem;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-radius:100px;padding:.25rem .6rem;font-size:.62rem;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:.3rem;opacity:0;transform:translateY(-5px);transition:.3s}
-.gc-in:hover .gc-v{opacity:1;transform:translateY(0)}
-
-/* ================================================================
-   HORIZONTAL CINEMATIC SHOWCASE
-================================================================ */
-.hsc{overflow:hidden;background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 10%,var(--bg2) 90%,var(--bg) 100%);position:relative;z-index:1}
-.hsc-head{text-align:center;padding:6rem 2rem 3rem}
-.hsc-lbl{font-size:.65rem;letter-spacing:.25em;text-transform:uppercase;color:var(--acc)}
-.hsc-h{font-family:'Playfair Display',serif;font-size:clamp(2rem,4vw,3rem);font-weight:600;margin-top:.8rem}
-.hsc-sub{color:var(--t2);font-weight:300;margin-top:.8rem;font-size:.95rem}
-.hsc-wrap{display:flex;gap:2.5rem;padding:0 4rem 6rem;will-change:transform}
-.hsc-card{flex-shrink:0;width:380px;position:relative;border-radius:var(--rl);overflow:hidden;will-change:transform}
-.hsc-card img{width:100%;aspect-ratio:3/4;object-fit:cover;transition:transform .8s cubic-bezier(.25,.46,.45,.94)}
-.hsc-card:hover img{transform:scale(1.06)}
-.hsc-card-info{position:absolute;bottom:0;left:0;right:0;padding:2rem 1.5rem;background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,transparent 100%)}
-.hsc-card-info h3{font-family:'Playfair Display',serif;font-size:1.25rem;color:#fff}
-.hsc-card-info span{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);margin-top:.3rem;display:block}
-/* Progress bar */
-.hsc-prog{max-width:300px;margin:0 auto;padding:0 2rem 5rem;display:flex;align-items:center;gap:1rem}
-.hsc-prog-bar{flex:1;height:2px;background:var(--brd);border-radius:2px;overflow:hidden}
-.hsc-prog-fill{height:100%;width:0%;background:var(--acc);border-radius:2px}
-.hsc-prog-num{font-family:'Space Grotesk',sans-serif;font-size:.75rem;color:var(--t3);font-variant-numeric:tabular-nums}
-@media(max-width:600px){.hsc-card{width:280px}.hsc-wrap{padding:0 1.5rem 4rem;gap:1.5rem}}
-
-/* ================================================================
-   QUOTE — parallax cinematic
-================================================================ */
-.qt{height:80vh;min-height:500px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;z-index:1}
-.qt-bg{position:absolute;inset:-10%;z-index:0}
-.qt-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(.25) saturate(.7)}
-.qt-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(6,6,6,.4),rgba(6,6,6,.8))}
-.qt-ct{position:relative;z-index:1;text-align:center;padding:0 2rem;max-width:800px}
-.qt-mark{font-family:'Playfair Display',serif;font-size:7rem;color:var(--acc);line-height:.4;opacity:.3}
-.qt-text{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,3.5vw,2.5rem);font-weight:400;font-style:italic;line-height:1.6;margin-top:1.5rem}
-.qt-who{font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;color:var(--acc);margin-top:2rem}
-
-/* ================================================================
-   INSTAGRAM CTA
-================================================================ */
-.ig{padding:8rem 2rem;text-align:center;position:relative;overflow:hidden;z-index:1}
-.ig::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,var(--acc-s),transparent 60%);pointer-events:none}
-.ig-h{font-family:'Space Grotesk',sans-serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:600;margin-top:1rem}
-.ig-h span{color:var(--acc)}
-.ig-p{color:var(--t2);font-weight:300;max-width:400px;margin:1rem auto 0;line-height:1.7}
-.ig-row{display:flex;gap:.4rem;justify-content:center;margin-top:3rem;flex-wrap:wrap}
-.ig-th{width:130px;height:130px;border-radius:var(--r);overflow:hidden}
-.ig-th img{width:100%;height:100%;object-fit:cover;filter:brightness(.7);transition:.5s}
-.ig-th:hover img{filter:brightness(1);transform:scale(1.12)}
-@media(max-width:600px){.ig-th{width:95px;height:95px}}
-
-/* ================================================================
-   CONTACT
-================================================================ */
-.contact{padding:12rem 3.5rem;max-width:1400px;margin:0 auto;position:relative;z-index:1}
-.contact-row{display:grid;grid-template-columns:1.5fr 1fr;gap:6rem}
-.ct-big{font-family:'Playfair Display',serif;font-size:clamp(2.5rem,6vw,5rem);font-weight:600;line-height:1.05}
-.ct-big .acc{color:var(--acc)}
-.ct-desc{color:var(--t2);font-weight:300;line-height:1.7;margin-top:1.5rem;max-width:450px}
-.ct-email{display:inline-flex;align-items:center;gap:.8rem;margin-top:2rem;font-family:'Space Grotesk',sans-serif;font-size:1rem;color:var(--acc);padding-bottom:.3rem;border-bottom:1px solid var(--acc-s);transition:.3s}
-.ct-email:hover{border-color:var(--acc)}
-.ct-right{padding-top:1rem}
-.ci{margin-bottom:2rem}
-.ci-l{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--t3)}
-.ci-v{font-size:.95rem;color:var(--t1);margin-top:.4rem}
-.ci-v a{transition:color .3s}
-.ci-v a:hover{color:var(--acc)}
-@media(max-width:768px){.contact{padding:6rem 1.5rem}.contact-row{grid-template-columns:1fr;gap:3rem}}
-
-/* ================================================================
-   FOOTER
-================================================================ */
-footer{border-top:1px solid var(--brd);padding:2.5rem 3.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;position:relative;z-index:1}
-.ft-c{font-size:.72rem;color:var(--t3);letter-spacing:.05em}
-.ft-lk{display:flex;gap:2rem}
-.ft-lk a{font-size:.72rem;color:var(--t2);letter-spacing:.05em;transition:color .3s}
-.ft-lk a:hover{color:var(--acc)}
-.ft-up{width:44px;height:44px;border:1px solid var(--brd2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--t2);font-size:1.1rem;transition:.3s}
-.ft-up:hover{border-color:var(--acc);color:var(--acc);transform:translateY(-3px)}
-
-/* ================================================================
-   LIGHTBOX
-================================================================ */
-.lb{position:fixed;inset:0;z-index:99990;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .45s}
-.lb.on{opacity:1;pointer-events:all}
-.lb-bg{position:absolute;inset:0;background:rgba(3,3,3,.97);backdrop-filter:blur(40px)}
-.lb-frame{position:relative;z-index:1;max-width:90vw;max-height:90vh;transform:scale(.92) translateY(15px);transition:transform .6s cubic-bezier(.22,1,.36,1)}
-.lb.on .lb-frame{transform:scale(1) translateY(0)}
-.lb-frame img{max-width:100%;max-height:85vh;border-radius:var(--r);box-shadow:0 40px 120px rgba(0,0,0,.6);object-fit:contain;transition:opacity .25s}
-.lb-x{position:absolute;top:1.5rem;right:1.5rem;z-index:2;width:48px;height:48px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);border-radius:50%;color:#fff;font-size:1.4rem;display:flex;align-items:center;justify-content:center;transition:.3s}
-.lb-x:hover{transform:rotate(90deg) scale(1.1);background:rgba(255,255,255,.06)}
-.lb-a{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:52px;height:52px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);border-radius:50%;color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:.3s}
-.lb-a:hover{background:rgba(255,255,255,.08);transform:translateY(-50%) scale(1.1)}
-.lb-p{left:1.5rem}.lb-n{right:1.5rem}
-.lb-info{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);text-align:center;opacity:0;transition:opacity .4s .2s}
-.lb.on .lb-info{opacity:1}
-.lb-info-t{font-family:'Playfair Display',serif;font-size:1rem;color:#fff}
-.lb-info-c{font-size:.62rem;color:rgba(255,255,255,.3);letter-spacing:.1em;margin-top:.2rem}
-@media(max-width:768px){.lb-p,.lb-n{display:none}}
-
-/* ================================================================
-   GRAIN + VIGNETTE
-================================================================ */
-.grain{position:fixed;inset:0;z-index:99998;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:256px}
-.vignette{position:fixed;inset:0;z-index:99997;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 60%,rgba(0,0,0,.45) 100%)}
-</style>
-</head>
-<body>
-
-<div class="grain"></div>
-<div class="vignette"></div>
-
-
-<div class="cur" id="cur"></div>
-<div class="cur-text" id="curText">View</div>
-
-<!-- PRELOADER -->
-<div class="pre" id="pre">
-  <div class="pre-cols"><div class="pre-col"></div><div class="pre-col"></div><div class="pre-col"></div><div class="pre-col"></div><div class="pre-col"></div></div>
-  <div class="pre-top">
-    <div class="pre-logo">lens<span>of</span>uday</div>
-    <div class="pre-loading">Loading</div>
-  </div>
-  <div class="pre-words" id="preWords">
-    <span class="pre-word">Landscapes</span>
-    <span class="pre-word">Sunsets</span>
-    <span class="pre-word">Mountains</span>
-    <span class="pre-word">Nature</span>
-  </div>
-  <div class="pre-bottom">
-    <div class="pre-num" id="preNum">0</div>
-  </div>
-  <div class="pre-bar" id="preBar"></div>
-</div>
-
-<!-- NAV -->
-<header class="nav" id="nav">
-  <a href="#" class="nav-brand">lens<span>of</span>uday</a>
-  <ul class="nav-ul">
-    <li><a href="#about">About</a></li>
-    <li><a href="#gallery">Gallery</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="https://www.instagram.com/lensofuday/" target="_blank">Instagram ↗</a></li>
-  </ul>
-  <button class="nav-ham" id="ham" aria-label="Menu"><span></span><span></span><span></span></button>
-</header>
-
-<div class="fmenu" id="fmenu">
-  <nav>
-    <a href="#about" class="fm-link">About</a>
-    <a href="#gallery" class="fm-link">Gallery</a>
-    <a href="#contact" class="fm-link">Contact</a>
-    <a href="https://www.instagram.com/lensofuday/" target="_blank" class="fm-link">Instagram</a>
-  </nav>
-  <div class="fmenu-foot">© 2026 lensofuday</div>
-</div>
-
-<!-- HERO -->
-<section class="hero" id="hero">
-  <div class="hero-bg" id="heroBg">
-    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1920&q=90" alt=""/>
-  </div>
-  <div class="hero-over"></div>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
-  <canvas id="constellation"></canvas>
-  <div class="hero-ct" id="heroCt">
-    <div class="hero-eye">
-      <span class="hero-eye-line"></span>
-      <span class="hero-eye-text">Nature & Landscape Photography</span>
-    </div>
-    <h1 class="hero-h">
-      <span class="line"><span class="line-inner l1">Udaykiran</span></span>
-      <span class="line"><span class="line-inner l2">Jammula</span></span>
-      <span class="line"><span class="line-inner l3">Capturing nature, one frame at a time</span></span>
-    </h1>
-    <p class="hero-sub">🌿 Landscape photographer based in India — telling stories of light, color, and the untamed beauty of our world through every frame.</p>
-    <div class="hero-btns">
-      <span class="magnetic"><a href="#gallery" class="btn btn-glow">Explore Gallery</a></span>
-      <span class="magnetic"><a href="https://www.instagram.com/lensofuday/" target="_blank" class="btn btn-line">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-        Follow
-      </a></span>
-    </div>
-  </div>
-  <div class="hero-scroll" id="heroScroll">
-    <span class="hero-scroll-text">Scroll</span>
-    <div class="hero-scroll-bar"></div>
-  </div>
-</section>
-
-<!-- MARQUEE -->
-<div class="marq">
-  <div class="marq-track" id="marq"></div>
-</div>
-
-<!-- ABOUT -->
-<section class="about" id="about">
-  <div class="about-row">
-    <div class="about-img" id="aboutImg">
-      <img src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=900&q=80" alt="Nature"/>
-      <div class="about-img-border"></div>
-      <div class="tag">
-        <div class="tag-l">Based in</div>
-        <div class="tag-v">India 🇮🇳</div>
-      </div>
-    </div>
-    <div id="aboutRight">
-      <div class="about-lbl">About Me</div>
-      <h2 class="about-h">Stories told through<br/><em>nature's</em> lens</h2>
-      <p class="about-p">I'm <strong>Udaykiran Jammula</strong> — a passionate landscape and nature photographer capturing the raw beauty of the world. From dramatic sunsets over hills to misty valleys and green countryside, every frame is a moment frozen in time.<br/><br/>Through <strong>@lensofuday</strong>, I share the beauty I see — one frame at a time.</p>
-      <div class="about-grid">
-        <div class="info-item"><div class="ai-l">Specialty</div><div class="ai-v">Landscapes & Nature</div></div>
-        <div class="info-item"><div class="ai-l">Instagram</div><div class="ai-v"><a href="https://www.instagram.com/lensofuday/" target="_blank">@lensofuday</a></div></div>
-        <div class="info-item"><div class="ai-l">Shooting Since</div><div class="ai-v">2024</div></div>
-        <div class="info-item"><div class="ai-l">Location</div><div class="ai-v">Andhra Pradesh</div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<div class="stats" id="stats">
-  <div class="st"><div class="st-n" data-to="11">0</div><div class="st-l">Posts</div></div>
-  <div class="st"><div class="st-n" data-to="156">0<span class="plus">+</span></div><div class="st-l">Followers</div></div>
-  <div class="st"><div class="st-n" data-to="85">0</div><div class="st-l">Following</div></div>
-  <div class="st"><div class="st-n" data-to="8500">0<span class="plus">+</span></div><div class="st-l">Total Views</div></div>
-</div>
-
-<!-- GALLERY -->
-<section class="gal" id="gallery">
-  <div class="gal-top">
-    <div><div class="gal-lbl">Portfolio</div><h2 class="gal-h">Selected Works</h2></div>
-    <div class="flt" id="flt">
-      <button class="flt-b on" data-f="all">All</button>
-      <button class="flt-b" data-f="travel">Travel</button>
-      <button class="flt-b" data-f="nature">Nature</button>
-      <button class="flt-b" data-f="people">People</button>
-      <button class="flt-b" data-f="events">Events</button>
-      <button class="flt-b" data-f="family">Family</button>
-      <button class="flt-b" data-f="other">Other</button>
-    </div>
-  </div>
-  <div class="msnr" id="msnr" aria-live="polite"><div class="gal-status">Loading photographs</div></div>
-</section>
-
-<!-- HORIZONTAL SHOWCASE -->
-<section class="hsc" id="hsc">
-  <div class="hsc-head">
-    <div class="hsc-lbl">Featured Frames</div>
-    <h2 class="hsc-h">Cinematic Highlights</h2>
-    <p class="hsc-sub">Scroll to explore the collection →</p>
-  </div>
-  <div class="hsc-wrap" id="hscWrap"></div>
-  <div class="hsc-prog"><div class="hsc-prog-bar"><div class="hsc-prog-fill" id="hscFill"></div></div><div class="hsc-prog-num" id="hscNum">0%</div></div>
-</section>
-
-<!-- QUOTE -->
-<section class="qt">
-  <div class="qt-bg" id="qtBg">
-    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1800&q=80" alt=""/>
-  </div>
-  <div class="qt-ct" id="qtCt">
-    <div class="qt-mark">"</div>
-    <p class="qt-text">In every walk with nature, one receives far more than he seeks.</p>
-    <p class="qt-who">— John Muir</p>
-  </div>
-</section>
-
-<!-- INSTAGRAM -->
-<section class="ig" id="instagram">
-  <div class="gal-lbl" style="justify-content:center">Follow the Journey</div>
-  <h2 class="ig-h">@<span>lensofuday</span></h2>
-  <p class="ig-p">Follow along for daily captures, behind-the-scenes, and the latest drops.</p>
-  <div class="ig-row" id="igRow"></div>
-  <div style="margin-top:2.5rem">
-    <span class="magnetic"><a href="https://www.instagram.com/lensofuday/" target="_blank" class="btn btn-glow">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-      Follow on Instagram
-    </a></span>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section class="contact" id="contact">
-  <div class="contact-row">
-    <div>
-      <div class="gal-lbl">Get in Touch</div>
-      <h2 class="ct-big">Let's create<br/>something<br/><span class="acc">beautiful</span></h2>
-      <p class="ct-desc">Available for collaborations, prints, and commissioned photography. Let's capture something extraordinary together.</p>
-      <a href="mailto:udaykiran.jammula@gmail.com" class="ct-email">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        udaykiran.jammula@gmail.com
-      </a>
-    </div>
-    <div class="ct-right">
-      <div class="ci"><div class="ci-l">Instagram</div><div class="ci-v"><a href="https://www.instagram.com/lensofuday/" target="_blank">@lensofuday</a></div></div>
-      <div class="ci"><div class="ci-l">Personal</div><div class="ci-v"><a href="https://www.instagram.com/udaykiran.jammula/" target="_blank">@udaykiran.jammula</a></div></div>
-      <div class="ci"><div class="ci-l">Location</div><div class="ci-v">Andhra Pradesh, India</div></div>
-      <div class="ci"><div class="ci-l">Available For</div><div class="ci-v">Collaborations & Prints</div></div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <span class="ft-c">© 2026 lensofuday — Udaykiran Jammula</span>
-  <div class="ft-lk"><a href="#hero">Home</a><a href="#gallery">Gallery</a><a href="https://www.instagram.com/lensofuday/" target="_blank">Instagram</a></div>
-  <button class="ft-up" id="toTop" aria-label="Top">↑</button>
-</footer>
-
-<!-- LIGHTBOX -->
-<div class="lb" id="lb">
-  <div class="lb-bg" id="lbBg"></div>
-  <button class="lb-x" id="lbX" aria-label="Close">&times;</button>
-  <button class="lb-a lb-p" id="lbP">&#8592;</button>
-  <button class="lb-a lb-n" id="lbN">&#8594;</button>
-  <div class="lb-frame"><img id="lbImg" src="" alt=""/></div>
-  <div class="lb-info"><div class="lb-info-t" id="lbT"></div><div class="lb-info-c" id="lbC"></div></div>
-</div>
-
-
-<script>
-/* ================================================================
-   CONFIG — ✏️ Update your stats here!
-================================================================ */
-const MY={posts:11,followers:156,following:85,views:8500};
-
-/* ================================================================
-   PHOTO MANIFEST — GitHub Pages cannot scan folders at runtime.
-   Keep photo paths in photos.json; see README.md for the simple workflow.
-================================================================ */
-let P=[];
-const PHOTO_CATEGORIES=['travel','nature','people','events','family','other'];
-const safeText=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
-const titleFromPath=path=>decodeURIComponent(path.split('/').pop().replace(/\.[^.]+$/,'').replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim()).replace(/\b\w/g,char=>char.toUpperCase())||'Untitled Photograph';
-function normalisePhoto(photo){
-  const src=String(photo.src||photo.path||'').replace(/^\.\//,'');
-  const category=PHOTO_CATEGORIES.includes(String(photo.category).toLowerCase())?String(photo.category).toLowerCase():(src.split('/')[1]||'other').toLowerCase();
-  return {src:encodeURI(src),full:encodeURI(photo.full||src),thumb:encodeURI(photo.thumb||src),srcset:photo.srcset||'',sizes:photo.sizes||'(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw',t:photo.title||titleFromPath(src),c:PHOTO_CATEGORIES.includes(category)?category:'other',v:Number(photo.views)||0};
-}
-async function loadPhotos(){
-  try{
-    const response=await fetch('photos.json',{cache:'no-cache'});
-    if(!response.ok)throw new Error(`photos.json returned ${response.status}`);
-    const manifest=await response.json();
-    const list=Array.isArray(manifest)?manifest:manifest.photos;
-    if(!Array.isArray(list))throw new Error('The manifest needs a "photos" array');
-    P=list.map(normalisePhoto).filter(photo=>photo.src.startsWith('photos/'));
-    return '';
-  }catch(error){
-    console.error('Could not load photos.json:',error);
-    return 'Could not load the photo collection. Check photos.json.';
-  }
-}
-
-/* ================================================================
-   LENIS SMOOTH SCROLL
-================================================================ */
-const lenis=new Lenis({duration:1.2,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),orientation:'vertical',smoothWheel:true});
-function raf(time){lenis.raf(time);requestAnimationFrame(raf)}
-requestAnimationFrame(raf);
-// Connect Lenis to GSAP ScrollTrigger
-lenis.on('scroll',ScrollTrigger.update);
-gsap.ticker.add(time=>{lenis.raf(time*1000)});
-gsap.ticker.lagSmoothing(0);
-
-/* ================================================================
-   CONSTELLATION CANVAS
-================================================================ */
-const cvs=document.getElementById('constellation');
-const ctx=cvs.getContext('2d');
-let cW,cH;
-const dots=[];
-const DOT_COUNT=60;
-const CONNECT_DIST=120;
-
-function resizeCvs(){
-  const hero=document.getElementById('hero');
-  cW=cvs.width=hero.offsetWidth;
-  cH=cvs.height=hero.offsetHeight;
-}
-resizeCvs();
-window.addEventListener('resize',resizeCvs);
-
-for(let i=0;i<DOT_COUNT;i++){
-  dots.push({x:Math.random()*cW,y:Math.random()*cH,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5});
-}
-
-let mouseCanvas={x:cW/2,y:cH/2};
-document.addEventListener('mousemove',e=>{mouseCanvas.x=e.clientX;mouseCanvas.y=e.clientY});
-
-function drawCanvas(){
-  ctx.clearRect(0,0,cW,cH);
-  dots.forEach(d=>{
-    d.x+=d.vx;d.y+=d.vy;
-    if(d.x<0||d.x>cW)d.vx*=-1;
-    if(d.y<0||d.y>cH)d.vy*=-1;
-    // Slight attraction to mouse
-    const dx=mouseCanvas.x-d.x,dy=mouseCanvas.y-d.y;
-    const dist=Math.sqrt(dx*dx+dy*dy);
-    if(dist<250){d.vx+=dx*.00004;d.vy+=dy*.00004}
-    ctx.beginPath();
-    ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
-    ctx.fillStyle='rgba(201,168,76,.35)';
-    ctx.fill();
-  });
-  // Draw connections
-  for(let i=0;i<dots.length;i++){
-    for(let j=i+1;j<dots.length;j++){
-      const dx=dots[i].x-dots[j].x,dy=dots[i].y-dots[j].y;
-      const d=Math.sqrt(dx*dx+dy*dy);
-      if(d<CONNECT_DIST){
-        ctx.beginPath();
-        ctx.moveTo(dots[i].x,dots[i].y);
-        ctx.lineTo(dots[j].x,dots[j].y);
-        ctx.strokeStyle=`rgba(201,168,76,${(.15*(1-d/CONNECT_DIST)).toFixed(3)})`;
-        ctx.lineWidth=.5;
-        ctx.stroke();
+    /* Reduced motion check */
+    @media (prefers-reduced-motion: reduce) {
+      *, ::before, ::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .tagline-word {
+        color: #FFFFFF !important;
       }
     }
+  </style>
+
+  <!-- Schema.org Structured Data for SEO / AEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://udaykiranjammula-alpha.github.io/lens_of_uday/#website",
+        "url": "https://udaykiranjammula-alpha.github.io/lens_of_uday/",
+        "name": "Lens of Uday",
+        "description": "Original Indian landscape and nature photography by Udaykiran Jammula",
+        "author": {
+          "@type": "Person",
+          "name": "Udaykiran Jammula"
+        }
+      },
+      {
+        "@type": "ImageGallery",
+        "@id": "https://udaykiranjammula-alpha.github.io/lens_of_uday/#gallery",
+        "name": "Lens of Uday Archival Indian Landscape Collection",
+        "description": "Curated collection of Indian mountain, forest, and coastal frames captured on high resolution medium."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What paper do you print on?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "We print exclusively on Hahnemuhle Photo Rag 310 gsm, a 100 percent cotton archival paper with a smooth matte texture that eliminates glare."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are these prints limited edition?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Landscape masterworks are limited to editions of 25. Each print is hand numbered and accompanied by a signed certificate of authenticity."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How are prints packaged for transit?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Unframed prints are rolled in archival tissue and shipped inside heavy industrial tubes. Framed works ship flat inside custom wooden crates with reinforced corners."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I license these images for commercial campaigns?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Commercial licenses for digital campaigns, print media, and billboards can be requested directly through our licensing form."
+            }
+          }
+        ]
+      }
+    ]
   }
-  // Connect closest dot to mouse
-  let closestDist=Infinity,closestDot=null;
-  dots.forEach(d=>{const dx=mouseCanvas.x-d.x,dy=mouseCanvas.y-d.y;const dist=Math.sqrt(dx*dx+dy*dy);if(dist<closestDist){closestDist=dist;closestDot=d}});
-  if(closestDot&&closestDist<200){
-    ctx.beginPath();ctx.moveTo(mouseCanvas.x,mouseCanvas.y);ctx.lineTo(closestDot.x,closestDot.y);
-    ctx.strokeStyle=`rgba(201,168,76,${(.2*(1-closestDist/200)).toFixed(3)})`;ctx.lineWidth=.8;ctx.stroke();
-  }
-  requestAnimationFrame(drawCanvas);
-}
-drawCanvas();
+  </script>
+</head>
+<body class="bg-black text-white antialiased selection:bg-neutral-800 selection:text-white">
 
-/* ================================================================
-   PRELOADER
-================================================================ */
-const pre=document.getElementById('pre');
-const preNum=document.getElementById('preNum');
-const preBar=document.getElementById('preBar');
-const preWords=document.querySelectorAll('.pre-word');
-let pct=0,wordIdx=0;
+  <!-- Accessible Skip to Content Link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-function preTick(){
-  pct+=Math.random()*8+3;
-  if(pct>100)pct=100;
-  preNum.textContent=Math.floor(pct);
-  preBar.style.width=pct+'%';
-  // Cycle words
-  const newIdx=Math.min(Math.floor(pct/25),preWords.length-1);
-  if(newIdx!==wordIdx){wordIdx=newIdx;preWords.forEach((w,i)=>{w.classList.toggle('active',i<=wordIdx)})}
-  if(pct<100)requestAnimationFrame(()=>setTimeout(preTick,60+Math.random()*80));
-  else setTimeout(openSite,400);
-}
-setTimeout(preTick,300);
+  <!-- FLOATING NAVIGATION BAR (B7 Motion & Translucent Floating Pill) -->
+  <header class="fixed top-4 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+    <nav class="pointer-events-auto flex items-center justify-between gap-6 px-4 py-2 rounded-full border border-dark-border bg-dark-surface/85 backdrop-blur-md shadow-2xl transition-all duration-300 max-w-4xl w-full">
+      
+      <!-- Brand Wordmark -->
+      <a href="#" class="flex items-center gap-2 group text-white no-underline">
+        <span class="w-7 h-7 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-sm font-semibold group-hover:border-neutral-500 transition-colors">
+          <i class="ph ph-aperture text-neutral-300"></i>
+        </span>
+        <span class="text-base font-semibold tracking-tight">lens<span class="text-neutral-400 font-normal">of</span>uday</span>
+      </a>
 
-function openSite(){
-  const tl=gsap.timeline();
-  tl.to('.pre-num',{yPercent:-100,opacity:0,duration:.5,ease:'power3.in'})
-    .to('.pre-word',{opacity:0,y:-10,stagger:.05,duration:.3,ease:'power2.in'},'<')
-    .to('.pre-col',{scaleY:0,transformOrigin:'top',stagger:.08,duration:.6,ease:'power3.inOut'},.3)
-    .to(pre,{opacity:0,duration:.3,onComplete:()=>{pre.style.display='none'}},.7)
-    .call(animateHero,null,.6);
-}
+      <!-- Desktop Links -->
+      <div class="hidden md:flex items-center gap-6 text-sm font-medium text-neutral-300">
+        <a href="#gallery" class="hover:text-white transition-colors">Collection</a>
+        <a href="#craftsmanship" class="hover:text-white transition-colors">Craftsmanship</a>
+        <a href="#process" class="hover:text-white transition-colors">Process</a>
+        <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+      </div>
 
-/* ================================================================
-   HERO ANIMATION
-================================================================ */
-function animateHero(){
-  const tl=gsap.timeline({defaults:{ease:'power4.out'}});
-  tl.to('.hero-eye-text',{opacity:1,x:0,duration:.8},.1)
-    .to('.hero-eye-line',{scaleX:1,duration:.6},.1)
-    .to('.l1',{y:0,duration:1.1},.3)
-    .to('.l2',{y:0,duration:1.1},.45)
-    .to('.l3',{y:0,duration:1},.6)
-    .to('.hero-sub',{opacity:1,y:0,duration:.8},.9)
-    .to('.hero-btns',{opacity:1,y:0,duration:.7},1.1)
-    .to('#heroScroll',{opacity:1,duration:.6},1.4);
-}
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-3">
+        <button id="spatialToggleBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-dark-border bg-dark-card text-xs font-semibold text-neutral-300 hover:text-white hover:border-neutral-500 transition-all">
+          <i class="ph ph-cube text-neutral-400"></i>
+          <span id="spatialToggleText">3D Spatial View</span>
+        </button>
 
-/* Hero parallax */
-gsap.to('#heroBg',{yPercent:30,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
-gsap.to('#heroCt',{yPercent:50,opacity:0,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'70% top',scrub:true}});
+        <a href="#inquiry" class="btn-main bg-white text-black hover:bg-neutral-200">
+          <span>Acquire print</span>
+          <i class="ph ph-arrow-up-right text-xs"></i>
+        </a>
 
-/* ================================================================
-   MAGNETIC CURSOR
-================================================================ */
-const cur=document.getElementById('cur');
-const curText=document.getElementById('curText');
-let cx=0,cy=0;
-document.addEventListener('mousemove',e=>{cx=e.clientX;cy=e.clientY;gsap.to(cur,{x:cx,y:cy,duration:.15,ease:'power2.out'});gsap.to(curText,{x:cx,y:cy+45,duration:.2,ease:'power2.out'})});
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobileMenuBtn" aria-label="Toggle navigation menu" class="md:hidden flex items-center justify-center w-8 h-8 rounded-lg border border-dark-border bg-dark-card text-neutral-300 hover:text-white">
+          <i class="ph ph-list text-lg" id="menuIcon"></i>
+        </button>
+      </div>
+    </nav>
+  </header>
 
-/* Magnetic buttons */
-document.querySelectorAll('.magnetic').forEach(mag=>{
-  mag.addEventListener('mousemove',e=>{
-    const r=mag.getBoundingClientRect();
-    const dx=e.clientX-(r.left+r.width/2);
-    const dy=e.clientY-(r.top+r.height/2);
-    gsap.to(mag,{x:dx*.3,y:dy*.3,duration:.4,ease:'power2.out'});
-  });
-  mag.addEventListener('mouseleave',()=>{gsap.to(mag,{x:0,y:0,duration:.6,ease:'elastic.out(1,.5)'})});
-});
+  <!-- MOBILE FULL-HEIGHT PANEL -->
+  <div id="mobileMenuPanel" class="fixed inset-0 z-40 bg-black/95 backdrop-blur-xl flex flex-col justify-between p-8 transform -translate-y-full transition-transform duration-500 ease-base md:hidden">
+    <div class="flex justify-between items-center border-b border-dark-border pb-6 pt-4">
+      <span class="text-lg font-semibold tracking-tight">lens<span class="text-neutral-400 font-normal">of</span>uday</span>
+      <button id="mobileMenuClose" class="w-8 h-8 rounded-lg border border-dark-border flex items-center justify-center text-neutral-400 hover:text-white">
+        <i class="ph ph-x text-lg"></i>
+      </button>
+    </div>
+    <div class="flex flex-col gap-6 py-12">
+      <a href="#gallery" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">Collection</a>
+      <a href="#craftsmanship" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">Craftsmanship</a>
+      <a href="#process" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">Process</a>
+      <a href="#faq" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">FAQ</a>
+      <a href="#inquiry" class="mobile-nav-link text-2xl font-semibold text-white transition-colors">Print Inquiry</a>
+    </div>
+    <div class="border-t border-dark-border pt-6 flex justify-between items-center text-xs text-neutral-500 font-mono">
+      <span>UDAYKIRAN JAMMULA</span>
+      <a href="https://www.instagram.com/lensofuday/" target="_blank" rel="noopener" class="text-neutral-400 hover:text-white">@lensofuday</a>
+    </div>
+  </div>
 
-document.querySelectorAll('a,button').forEach(el=>{
-  el.addEventListener('mouseenter',()=>cur.classList.add('big'));
-  el.addEventListener('mouseleave',()=>{cur.classList.remove('big');cur.classList.remove('view')});
-});
+  <main id="main-content">
 
-/* ================================================================
-   NAV
-================================================================ */
-ScrollTrigger.create({trigger:'.hero',start:'85% top',onEnter:()=>document.getElementById('nav').classList.add('scroll'),onLeaveBack:()=>document.getElementById('nav').classList.remove('scroll')});
+    <!-- HERO SECTION (Skill A2, A5, B1, B5) -->
+    <section class="relative min-h-screen pt-32 pb-20 px-6 flex flex-col justify-center items-center overflow-hidden border-b border-dark-border">
+      <div class="max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Left Hero Content (Max width 680px per B5) -->
+        <div class="lg:col-span-7 flex flex-col items-start text-left z-10 max-w-[680px]">
+          
+          <!-- Proof Pill / Eye Label -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-dark-border bg-dark-surface text-xs font-semibold text-neutral-300 mb-6">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Archival landscape curation · India</span>
+          </div>
 
-const ham=document.getElementById('ham');
-const fmenu=document.getElementById('fmenu');
-ham.addEventListener('click',()=>{ham.classList.toggle('on');fmenu.classList.toggle('on');document.body.style.overflow=fmenu.classList.contains('on')?'hidden':''});
-document.querySelectorAll('.fm-link').forEach(a=>{a.addEventListener('click',()=>{ham.classList.remove('on');fmenu.classList.remove('on');document.body.style.overflow=''})});
+          <!-- Hero Heading (Text gradient left-to-right #FFFFFF -> #9B9B9B, max width 680px, no hyphens) -->
+          <h1 class="hero-heading-gradient text-4xl sm:text-5xl lg:text-6xl font-semibold leading-[1.05] tracking-tight mb-6">
+            Raw Indian landscapes<br/>captured on archival medium
+          </h1>
 
-/* ================================================================
-   MARQUEE — Scroll-velocity reactive
-================================================================ */
-const marqEl=document.getElementById('marq');
-const marqWords=['Landscapes','Sunsets','Dramatic Skies','Mountains','Nature','Golden Hour','Valleys','Cloud Formations'];
-let marqHTML='';
-for(let i=0;i<3;i++)marqWords.forEach(w=>{marqHTML+=`<span class="marq-item">${w} <span class="marq-dot"></span></span>`});
-marqEl.innerHTML=marqHTML;
+          <!-- Hero Subtitle (Body 1, no hyphens, text-wrap: pretty) -->
+          <p class="text-base sm:text-lg text-neutral-400 leading-relaxed font-normal mb-8 max-w-[620px]">
+            Limited edition nature and landscape prints crafted for quiet spaces. Every photograph is captured across India by Udaykiran Jammula and printed on certified museum cotton rag.
+          </p>
 
-let marqX=0;
-let marqSpeed=1;
-const marqW=marqEl.scrollWidth/3;
+          <!-- Action Cluster -->
+          <div class="flex flex-wrap items-center gap-4 mb-8">
+            <a href="#inquiry" class="btn-main bg-white text-black hover:bg-neutral-200">
+              <i class="ph ph-shopping-bag"></i>
+              <span>Collect a print</span>
+            </a>
+            <a href="#gallery" class="btn-main bg-dark-surface border border-dark-border text-white hover:border-neutral-500">
+              <i class="ph ph-compass"></i>
+              <span>Explore collection</span>
+            </a>
+          </div>
 
-// React to scroll velocity
-let scrollVel=0;
-lenis.on('scroll',({velocity})=>{scrollVel=Math.abs(velocity)});
+          <!-- Proof Line (Caption 1) -->
+          <div class="flex items-center gap-3 text-xs text-neutral-400 font-medium">
+            <i class="ph ph-seal-check text-neutral-300 text-base"></i>
+            <span>Verified 310 gsm Hahnemuhle cotton rag with signed certificate</span>
+          </div>
 
-function tickMarq(){
-  marqSpeed=1+scrollVel*.5;
-  marqX-=marqSpeed;
-  if(marqX<=-marqW)marqX+=marqW;
-  marqEl.style.transform=`translateX(${marqX}px)`;
-  requestAnimationFrame(tickMarq);
-}
-tickMarq();
+        </div>
 
-/* ================================================================
-   ABOUT — clip-path image reveal
-================================================================ */
-gsap.to('#aboutImg img',{clipPath:'inset(0% 0 0 0)',duration:1.4,ease:'power3.inOut',scrollTrigger:{trigger:'#aboutImg',start:'top 75%'}});
-gsap.from('#aboutRight > *',{y:50,opacity:0,stagger:.12,duration:.8,ease:'power3.out',scrollTrigger:{trigger:'#aboutRight',start:'top 70%'}});
+        <!-- Right Hero: Three.js Interactive 3D Optical Lens Viewport -->
+        <div class="lg:col-span-5 relative w-full h-[380px] sm:h-[460px] flex items-center justify-center">
+          <div class="w-full h-full rounded-2xl border border-dark-border bg-dark-surface relative overflow-hidden flex flex-col">
+            
+            <!-- Canvas Header / Status Bar -->
+            <div class="flex items-center justify-between px-4 py-2.5 border-b border-dark-border bg-dark-card/50 text-xs font-mono text-neutral-400">
+              <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-neutral-400"></span>
+                <span>FOCAL OPTICS SIMULATION</span>
+              </div>
+              <span id="apertureValue" class="text-neutral-300">f/2.8 · 50mm</span>
+            </div>
 
-/* ================================================================
-   STATS
-================================================================ */
-const stEls=document.querySelectorAll('.st-n');
-const stKeys=['posts','followers','following','views'];
-stEls.forEach((el,i)=>{if(MY[stKeys[i]])el.dataset.to=MY[stKeys[i]]});
+            <!-- 3D Three.js Viewport -->
+            <div id="lens3dContainer" class="flex-1 w-full h-full relative cursor-grab active:cursor-grabbing">
+              <!-- WebGL Canvas injected via JavaScript -->
+            </div>
 
-ScrollTrigger.create({trigger:'#stats',start:'top 80%',once:true,onEnter:()=>{
-  stEls.forEach(el=>{
-    const target=parseInt(el.dataset.to);
-    const plus=el.querySelector('.plus');
-    gsap.to({v:0},{v:target,duration:2.2,ease:'power2.out',onUpdate:function(){
-      const val=Math.floor(this.targets()[0].v).toLocaleString();
-      el.textContent=val;
-      if(plus)el.innerHTML=val+'<span class="plus">+</span>';
-    }});
-  });
-}});
+            <!-- Interactive Optical Controls Footer -->
+            <div class="px-4 py-2.5 border-t border-dark-border bg-dark-card/40 flex items-center justify-between text-xs font-mono text-neutral-400">
+              <span>DRAG TO ROTATE LENS</span>
+              <button id="cycleApertureBtn" class="text-neutral-300 hover:text-white flex items-center gap-1 transition-colors">
+                <i class="ph ph-aperture"></i>
+                <span>CYCLE APERTURE</span>
+              </button>
+            </div>
 
-/* ================================================================
-   GALLERY
-================================================================ */
-const msnr=document.getElementById('msnr');
-let vis=[],curI=0;
+          </div>
+        </div>
 
-function buildGal(f){
-  msnr.innerHTML='';
-  vis=f==='all'?[...P]:P.filter(p=>p.c===f);
-  if(!vis.length){
-    msnr.innerHTML=`<div class="gal-status empty">${f==='all'?'No photographs yet — add images to photos/ and list them in photos.json.':`No ${safeText(f)} photographs yet.`}</div>`;
-    ScrollTrigger.refresh();
-    return;
-  }
-  vis.forEach((p,i)=>{
-    const d=document.createElement('div');d.className='gc';d.dataset.i=i;
-    d.innerHTML=`<div class="gc-in"><img src="${p.thumb}" data-full="${p.full}" alt="${safeText(p.t)}" loading="lazy" decoding="async" sizes="${p.sizes}"${p.srcset?` srcset="${p.srcset}"`:''}/><div class="gc-ov"><h3 class="gc-t">${safeText(p.t)}</h3><span class="gc-c">${safeText(p.c)}</span></div><div class="gc-v"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>${p.v?`${p.v.toLocaleString()} views`:'View'}</div></div>`;
-    msnr.appendChild(d);
-  });
-  gsap.to(msnr.querySelectorAll('.gc'),{opacity:1,y:0,stagger:.07,duration:.65,ease:'power3.out',delay:.08});
-  // Cursor hover
-  document.querySelectorAll('.gc-in').forEach(c=>{
-    c.addEventListener('mouseenter',()=>{cur.classList.add('view');curText.classList.add('show')});
-    c.addEventListener('mouseleave',()=>{cur.classList.remove('view');curText.classList.remove('show')});
-  });
-  ScrollTrigger.refresh();
-}
+      </div>
+    </section>
 
-// 3D Tilt
-document.addEventListener('mousemove',e=>{
-  document.querySelectorAll('.gc-in').forEach(card=>{
-    const r=card.getBoundingClientRect();
-    const x=e.clientX-r.left,y=e.clientY-r.top;
-    if(x>=0&&x<=r.width&&y>=0&&y<=r.height){
-      gsap.to(card,{rotateX:((y/r.height)-.5)*-12,rotateY:((x/r.width)-.5)*16,scale:1.02,duration:.4,ease:'power2.out'});
-    }else{
-      gsap.to(card,{rotateX:0,rotateY:0,scale:1,duration:.6,ease:'power2.out'});
+    <!-- PROOF STRIP (Skill A2, A4) -->
+    <section class="border-b border-dark-border bg-dark-surface py-8 px-6">
+      <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
+        
+        <div class="flex flex-col gap-1">
+          <span class="text-2xl sm:text-3xl font-semibold text-white tracking-tight">45+</span>
+          <span class="text-xs text-neutral-400 font-medium">Curated Indian frames</span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-2xl sm:text-3xl font-semibold text-white tracking-tight">310 gsm</span>
+          <span class="text-xs text-neutral-400 font-medium">Archival Hahnemuhle cotton</span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-2xl sm:text-3xl font-semibold text-white tracking-tight">100 year</span>
+          <span class="text-xs text-neutral-400 font-medium">Pigment color longevity</span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-2xl sm:text-3xl font-semibold text-white tracking-tight">Edition 25</span>
+          <span class="text-xs text-neutral-400 font-medium">Numbered and signed</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MANDATORY TAGLINE REVEAL SECTION (Skill B11) -->
+    <section id="tagline-reveal" class="py-24 sm:py-32 px-6 border-b border-dark-border flex justify-center items-center bg-black">
+      <div class="max-w-[680px] w-full text-center">
+        
+        <div class="text-xs font-mono uppercase tracking-widest text-neutral-500 mb-6">Visual philosophy</div>
+        
+        <!-- Large Heading 2 text reveal on scroll -->
+        <h2 id="taglineText" class="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.25] tracking-tight">
+          <!-- Populated and wrapped into spans via script -->
+          Every photograph is an unhurried study of light, silence, and earth. We turn fleeting Indian dawns into permanent architectural pieces.
+        </h2>
+
+      </div>
+    </section>
+
+    <!-- 3D SPATIAL GALLERY & COLLECTION VIEW (Skill A2, A3) -->
+    <section id="gallery" class="py-20 px-6 border-b border-dark-border bg-black">
+      <div class="max-w-6xl mx-auto">
+        
+        <!-- Gallery Header & Controls -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div class="max-w-[680px]">
+            <div class="inline-flex items-center gap-2 text-xs font-mono text-neutral-400 mb-2">
+              <i class="ph ph-frame-corners"></i>
+              <span>ARCHIVAL COLLECTION</span>
+            </div>
+            <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-3">
+              Moments frozen in natural stillness
+            </h2>
+            <p class="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
+              Select any photograph to inspect exposure metadata, select bespoke framing, or acquire an edition for your space.
+            </p>
+          </div>
+
+          <!-- Controls: Category Filters & Mode Switcher -->
+          <div class="flex flex-wrap items-center gap-3">
+            
+            <!-- Category Filter Buttons -->
+            <div class="flex items-center p-1 rounded-lg border border-dark-border bg-dark-surface text-xs font-medium">
+              <button class="filter-btn px-3 py-1 rounded-md bg-white text-black font-semibold transition-all" data-category="all">All</button>
+              <button class="filter-btn px-3 py-1 rounded-md text-neutral-400 hover:text-white transition-all" data-category="landscape">Landscapes</button>
+              <button class="filter-btn px-3 py-1 rounded-md text-neutral-400 hover:text-white transition-all" data-category="nature">Forest & Hills</button>
+              <button class="filter-btn px-3 py-1 rounded-md text-neutral-400 hover:text-white transition-all" data-category="atmosphere">Atmosphere</button>
+            </div>
+
+            <!-- 3D / 2D Toggle Switch -->
+            <button id="viewModeToggle" class="btn-main bg-dark-card border border-dark-border text-neutral-300 hover:text-white text-xs py-2 px-3">
+              <i class="ph ph-cube" id="viewModeIcon"></i>
+              <span id="viewModeLabel">Launch 3D Runway</span>
+            </button>
+
+          </div>
+        </div>
+
+        <!-- 3D SPATIAL RUNWAY CANVAS VIEWPORT (WebGL Container) -->
+        <div id="spatialGalleryViewport" class="hidden w-full h-[540px] rounded-2xl border border-dark-border bg-dark-surface relative overflow-hidden mb-12">
+          <div id="spatialThreeCanvas" class="w-full h-full"></div>
+          
+          <!-- 3D HUD / Instructions Overlay -->
+          <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-neutral-400 bg-dark-card/80 backdrop-blur-md px-4 py-2 rounded-lg border border-dark-border pointer-events-none">
+            <div class="flex items-center gap-2">
+              <i class="ph ph-hand-pointing"></i>
+              <span>DRAG TO FLY · SCROLL TO ZOOM · CLICK ANY FRAME TO INSPECT</span>
+            </div>
+            <span id="spatialCountDisplay">45 FRAMES IN 3D SPACE</span>
+          </div>
+        </div>
+
+        <!-- CURATED GRID VIEW (High Performance Responsive Masonry) -->
+        <div id="gridGalleryViewport" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Populated dynamically via loadGalleryData() -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CRAFTSMANSHIP & BENEFITS SECTION (Skill A2, A5) -->
+    <section id="craftsmanship" class="py-20 px-6 border-b border-dark-border bg-black">
+      <div class="max-w-6xl mx-auto">
+        
+        <div class="max-w-[680px] mb-12">
+          <div class="text-xs font-mono text-neutral-400 mb-2">PRECISION STANDARDS</div>
+          <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-3">
+            Engineered for architectural permanence
+          </h2>
+          <p class="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
+            Every physical piece balances optical fidelity with archival preservation so your art endures for generations.
+          </p>
+        </div>
+
+        <!-- 4 Outcome-Driven Cards (Bold outcome + proof per A5) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <div class="flat-card p-6 sm:p-8 flex flex-col justify-between">
+            <div class="w-10 h-10 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center text-xl text-neutral-300 mb-6">
+              <i class="ph ph-drop-half-bottom"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-white mb-2">
+                Archival longevity
+              </h3>
+              <p class="text-sm text-neutral-400 leading-relaxed font-normal">
+                100 year pigment ink on acid free Hahnemuhle paper ensures zero color degradation over generations.
+              </p>
+            </div>
+          </div>
+
+          <div class="flat-card p-6 sm:p-8 flex flex-col justify-between">
+            <div class="w-10 h-10 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center text-xl text-neutral-300 mb-6">
+              <i class="ph ph-scan"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-white mb-2">
+                True optical resolution
+              </h3>
+              <p class="text-sm text-neutral-400 leading-relaxed font-normal">
+                Native medium format captures reveal fine textures in mountain mist, foliage, and granite.
+              </p>
+            </div>
+          </div>
+
+          <div class="flat-card p-6 sm:p-8 flex flex-col justify-between">
+            <div class="w-10 h-10 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center text-xl text-neutral-300 mb-6">
+              <i class="ph ph-ruler"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-white mb-2">
+                Custom tailored framing
+              </h3>
+              <p class="text-sm text-neutral-400 leading-relaxed font-normal">
+                Handcrafted teak and matte black aluminum frames built to your wall dimensions.
+              </p>
+            </div>
+          </div>
+
+          <div class="flat-card p-6 sm:p-8 flex flex-col justify-between">
+            <div class="w-10 h-10 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center text-xl text-neutral-300 mb-6">
+              <i class="ph ph-certificate"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-semibold text-white mb-2">
+                Commercial licensing clarity
+              </h3>
+              <p class="text-sm text-neutral-400 leading-relaxed font-normal">
+                Royalty free commercial licenses delivered with uncompressed RAW source files within 24 hours.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS SECTION (Skill A2, A5) -->
+    <section id="process" class="py-20 px-6 border-b border-dark-border bg-dark-surface">
+      <div class="max-w-6xl mx-auto">
+        
+        <div class="max-w-[680px] mb-16">
+          <div class="text-xs font-mono text-neutral-400 mb-2">THREE STEP FULFILLMENT</div>
+          <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-3">
+            From shutter release to your wall
+          </h2>
+          <p class="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
+            A transparent and protected ordering sequence with continuous logistics updates.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          <div class="flex flex-col gap-4">
+            <div class="text-xs font-mono text-neutral-500">STEP 01</div>
+            <h3 class="text-xl font-semibold text-white">Select your photograph</h3>
+            <p class="text-sm text-neutral-400 leading-relaxed font-normal">
+              Browse the 3D spatial collection or filtered categories to pick your frame and desired dimension.
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <div class="text-xs font-mono text-neutral-500">STEP 02</div>
+            <h3 class="text-xl font-semibold text-white">Choose finish and framing</h3>
+            <p class="text-sm text-neutral-400 leading-relaxed font-normal">
+              Select loose archival print or gallery framing with anti reflective museum glass.
+            </p>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <div class="text-xs font-mono text-neutral-500">STEP 03</div>
+            <h3 class="text-xl font-semibold text-white">Delivered to your space</h3>
+            <p class="text-sm text-neutral-400 leading-relaxed font-normal">
+              Shipped in reinforced wooden crates with tracked logistics and signed authenticity documents.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FREQUENTLY ANSWERED QUESTIONS (Skill A2, A4) -->
+    <section id="faq" class="py-20 px-6 border-b border-dark-border bg-black">
+      <div class="max-w-4xl mx-auto">
+        
+        <div class="text-center max-w-[680px] mx-auto mb-16">
+          <div class="text-xs font-mono text-neutral-400 mb-2">CLARIFICATIONS</div>
+          <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-3">
+            Frequently answered questions
+          </h2>
+          <p class="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
+            Clear information regarding paper stock, edition numbers, worldwide shipping, and licensing.
+          </p>
+        </div>
+
+        <!-- 8 Accordion Questions -->
+        <div class="flex flex-col gap-4">
+          
+          <div class="flat-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+            <div class="flex justify-between items-center gap-4">
+              <h3 class="text-base sm:text-lg font-semibold text-white">What paper do you print on?</h3>
+              <i class="ph ph-plus text-neutral-400 transition-transform duration-300 faq-icon"></i>
+            </div>
+            <div class="faq-content hidden pt-4 text-sm text-neutral-400 leading-relaxed">
+              We print exclusively on Hahnemuhle Photo Rag 310 gsm, a 100 percent cotton archival paper with a smooth matte texture that eliminates glare.
+            </div>
+          </div>
+
+          <div class="flat-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+            <div class="flex justify-between items-center gap-4">
+              <h3 class="text-base sm:text-lg font-semibold text-white">Are these prints limited edition?</h3>
+              <i class="ph ph-plus text-neutral-400 transition-transform duration-300 faq-icon"></i>
+            </div>
+            <div class="faq-content hidden pt-4 text-sm text-neutral-400 leading-relaxed">
+              Yes. Landscape masterworks are limited to editions of 25. Each print is hand numbered and accompanied by a signed certificate of authenticity.
+            </div>
+          </div>
+
+          <div class="flat-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+            <div class="flex justify-between items-center gap-4">
+              <h3 class="text-base sm:text-lg font-semibold text-white">How are prints packaged for transit?</h3>
+              <i class="ph ph-plus text-neutral-400 transition-transform duration-300 faq-icon"></i>
+            </div>
+            <div class="faq-content hidden pt-4 text-sm text-neutral-400 leading-relaxed">
+              Unframed prints are rolled in archival tissue and shipped inside heavy industrial tubes. Framed works ship flat inside custom wooden crates with reinforced corners.
+            </div>
+          </div>
+
+          <div class="flat-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+            <div class="flex justify-between items-center gap-4">
+              <h3 class="text-base sm:text-lg font-semibold text-white">Can I license these images for commercial campaigns?</h3>
+              <i class="ph ph-plus text-neutral-400 transition-transform duration-300 faq-icon"></i>
+            </div>
+            <div class="faq-content hidden pt-4 text-sm text-neutral-400 leading-relaxed">
+              Yes. Commercial licenses for digital campaigns, print media, and billboards can be requested directly through our licensing form.
+            </div>
+          </div>
+
+          <div class="flat-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+            <div class="flex justify-between items-center gap-4">
+              <h3 class="text-base sm:text-lg font-semibold text-white">What happens if my package arrives damaged?</h3>
+              <i class="ph ph-plus text-neutral-400 transition-transform duration-300 faq-icon"></i>
+            </div>
+            <div class="faq-content hidden pt-4 text-sm text-neutral-400 leading-relaxed">
+              We replace any damaged delivery at zero cost. Simply email a photograph of the damaged crate within 48 hours of delivery.
+            </div>
+          </div>
+
+          <div class="flat-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+            <div class="flex justify-between items-center gap-4">
+              <h3 class="text-base sm:text-lg font-semibold text-white">Do you ship internationally?</h3>
+              <i class="ph ph-plus text-neutral-400 transition-transform duration-300 faq-icon"></i>
+            </div>
+            <div class="faq-content hidden pt-4 text-sm text-neutral-400 leading-relaxed">
+              Yes. We ship worldwide with tracked DHL Express courier delivery.
+            </div>
+          </div>
+
+          <div class="flat-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+            <div class="flex justify-between items-center gap-4">
+              <h3 class="text-base sm:text-lg font-semibold text-white">Can I request a custom size for a specific wall?</h3>
+              <i class="ph ph-plus text-neutral-400 transition-transform duration-300 faq-icon"></i>
+            </div>
+            <div class="faq-content hidden pt-4 text-sm text-neutral-400 leading-relaxed">
+              Yes. We regularly produce custom proportions up to 60 inches on the long edge for interior architecture projects.
+            </div>
+          </div>
+
+          <div class="flat-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+            <div class="flex justify-between items-center gap-4">
+              <h3 class="text-base sm:text-lg font-semibold text-white">Can I view RAW files before licensing?</h3>
+              <i class="ph ph-plus text-neutral-400 transition-transform duration-300 faq-icon"></i>
+            </div>
+            <div class="faq-content hidden pt-4 text-sm text-neutral-400 leading-relaxed">
+              Commercial buyers can review full resolution watermarked previews before purchasing commercial usage rights.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INQUIRY & PRINT RESERVATION SECTION (Primary Conversion) -->
+    <section id="inquiry" class="py-20 px-6 border-b border-dark-border bg-dark-surface">
+      <div class="max-w-4xl mx-auto">
+        
+        <div class="flat-card p-8 sm:p-12">
+          <div class="max-w-[680px] mb-8">
+            <div class="text-xs font-mono text-neutral-400 mb-2">RESERVATION DESK</div>
+            <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-3">
+              Acquire an archival edition
+            </h2>
+            <p class="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
+              Enter your preferred dimensions and shipping destination. We will prepare your edition documentation and framing specifications.
+            </p>
+          </div>
+
+          <form id="inquiryForm" onsubmit="handleInquirySubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            
+            <div class="flex flex-col gap-2">
+              <label for="collectorName" class="text-xs font-mono text-neutral-300">YOUR FULL NAME</label>
+              <input type="text" id="collectorName" required placeholder="Anita Sharma" class="px-4 py-2.5 rounded-lg border border-dark-border bg-black text-white text-sm focus:outline-none focus:border-white transition-colors"/>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="collectorEmail" class="text-xs font-mono text-neutral-300">EMAIL ADDRESS</label>
+              <input type="email" id="collectorEmail" required placeholder="anita@domain.com" class="px-4 py-2.5 rounded-lg border border-dark-border bg-black text-white text-sm focus:outline-none focus:border-white transition-colors"/>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="frameDimension" class="text-xs font-mono text-neutral-300">EDITION DIMENSION</label>
+              <select id="frameDimension" class="px-4 py-2.5 rounded-lg border border-dark-border bg-black text-white text-sm focus:outline-none focus:border-white transition-colors">
+                <option value="18x24">18 × 24 inches (Gallery medium)</option>
+                <option value="24x36" selected>24 × 36 inches (Architectural standard)</option>
+                <option value="40x60">40 × 60 inches (Grand salon edition)</option>
+                <option value="commercial">Commercial License only</option>
+              </select>
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label for="framingFinish" class="text-xs font-mono text-neutral-300">FRAMING SPECIFICATION</label>
+              <select id="framingFinish" class="px-4 py-2.5 rounded-lg border border-dark-border bg-black text-white text-sm focus:outline-none focus:border-white transition-colors">
+                <option value="unframed" selected>Unframed loose print in archival tube</option>
+                <option value="black-oak">Matte black aluminum frame</option>
+                <option value="natural-teak">Handcrafted natural teak wood frame</option>
+              </select>
+            </div>
+
+            <div class="sm:col-span-2 flex flex-col gap-2">
+              <label for="shippingDestination" class="text-xs font-mono text-neutral-300">DESTINATION CITY AND COUNTRY</label>
+              <input type="text" id="shippingDestination" required placeholder="Bengaluru, India or London, United Kingdom" class="px-4 py-2.5 rounded-lg border border-dark-border bg-black text-white text-sm focus:outline-none focus:border-white transition-colors"/>
+            </div>
+
+            <div class="sm:col-span-2 flex flex-col gap-2">
+              <label for="collectorNotes" class="text-xs font-mono text-neutral-300">DESIRED PHOTOGRAPH OR NOTES</label>
+              <textarea id="collectorNotes" rows="3" placeholder="Tell us which photograph you wish to collect or your commercial campaign scope" class="px-4 py-2.5 rounded-lg border border-dark-border bg-black text-white text-sm focus:outline-none focus:border-white transition-colors"></textarea>
+            </div>
+
+            <div class="sm:col-span-2 flex items-center justify-between pt-4 border-t border-dark-border">
+              <div class="flex items-center gap-2 text-xs text-neutral-400">
+                <i class="ph ph-shield-check text-base"></i>
+                <span>Damage replacement guarantee included</span>
+              </div>
+              <button type="submit" class="btn-main bg-white text-black hover:bg-neutral-200">
+                <span>Submit reservation</span>
+                <i class="ph ph-arrow-right"></i>
+              </button>
+            </div>
+
+          </form>
+
+          <div id="formSuccessMessage" class="hidden mt-6 p-4 rounded-lg border border-emerald-800 bg-emerald-950/40 text-emerald-200 text-sm">
+            Thank you. Your reservation request has been received. Udaykiran Jammula will follow up with certificate documentation and shipping timeline within 24 hours.
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- LIGHTBOX MODAL (With EXIF Metadata in Geist Mono) -->
+  <div id="lightboxModal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl hidden flex-col justify-between p-6 sm:p-10 transition-opacity duration-300">
+    
+    <!-- Lightbox Header -->
+    <div class="flex items-center justify-between pb-4 border-b border-dark-border">
+      <div>
+        <h3 id="lbTitle" class="text-lg font-semibold text-white">Photograph Title</h3>
+        <span id="lbLocation" class="text-xs text-neutral-400 font-mono">Location</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button id="lbAcquireBtn" class="btn-main bg-white text-black text-xs py-1.5 px-3">
+          <span>Acquire print</span>
+        </button>
+        <button onclick="closeLightbox()" class="w-9 h-9 rounded-lg border border-dark-border bg-dark-card text-neutral-300 hover:text-white flex items-center justify-center">
+          <i class="ph ph-x text-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lightbox Center Image Viewport -->
+    <div class="flex-1 flex items-center justify-center py-6 relative">
+      <button onclick="navigateLightbox(-1)" class="absolute left-2 sm:left-6 w-10 h-10 rounded-full border border-dark-border bg-dark-card/80 text-white flex items-center justify-center hover:bg-neutral-800 transition-colors">
+        <i class="ph ph-caret-left text-lg"></i>
+      </button>
+      
+      <img id="lbImage" src="" alt="" class="max-h-[70vh] max-w-[85vw] object-contain rounded-lg border border-dark-border shadow-2xl transition-opacity duration-300"/>
+
+      <button onclick="navigateLightbox(1)" class="absolute right-2 sm:right-6 w-10 h-10 rounded-full border border-dark-border bg-dark-card/80 text-white flex items-center justify-center hover:bg-neutral-800 transition-colors">
+        <i class="ph ph-caret-right text-lg"></i>
+      </button>
+    </div>
+
+    <!-- Lightbox Footer (EXIF data badge in Geist Mono) -->
+    <div class="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-dark-border text-xs font-mono text-neutral-400 gap-4">
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1.5"><i class="ph ph-camera"></i> <span id="lbExif">24mm · f/2.8 · 1/250s · ISO 100</span></span>
+        <span class="text-neutral-600">|</span>
+        <span id="lbEdition">Edition of 25</span>
+      </div>
+      <div id="lbCounter" class="text-neutral-500">1 / 45</div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER (Skill B10 Ship Requirements) -->
+  <footer class="border-t border-dark-border bg-black py-12 px-6">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-neutral-500 font-mono">
+      
+      <div class="flex items-center gap-2 text-white">
+        <span class="w-6 h-6 rounded-full bg-dark-card border border-dark-border flex items-center justify-center text-xs">
+          <i class="ph ph-aperture"></i>
+        </span>
+        <span class="font-semibold tracking-tight">lens of uday</span>
+        <span class="text-neutral-500 ml-2">© 2026 Udaykiran Jammula</span>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <a href="#gallery" class="hover:text-white transition-colors">Collection</a>
+        <a href="#craftsmanship" class="hover:text-white transition-colors">Craftsmanship</a>
+        <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
+        <a href="https://www.instagram.com/lensofuday/" target="_blank" rel="noopener" class="hover:text-white transition-colors flex items-center gap-1">
+          <i class="ph ph-instagram-logo"></i>
+          <span>Instagram</span>
+        </a>
+      </div>
+
+      <div>
+        <span>Museum archival certified</span>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGIC: Data Loading, Three.js 3D Viewports, Tagline Reveal, Lightbox -->
+  <script>
+    let photoData = [];
+    let activeCategory = 'all';
+    let currentLightboxIndex = 0;
+    let isSpatialMode = false;
+
+    // Load dynamic photographs from photos.json
+    async function loadPhotographs() {
+      try {
+        const res = await fetch('photos.json');
+        const json = await res.json();
+        photoData = json.photos || [];
+        renderGrid();
+        initTaglineReveal();
+        initHero3DLens();
+        initSpatial3DGallery();
+      } catch (err) {
+        console.error('Failed to load photos.json:', err);
+      }
     }
-  });
-});
 
-// Filters
-document.querySelectorAll('.flt-b').forEach(b=>{
-  b.addEventListener('click',()=>{
-    document.querySelector('.flt-b.on').classList.remove('on');
-    b.classList.add('on');
-    buildGal(b.dataset.f);
-  });
-});
+    // Render Grid View
+    function renderGrid() {
+      const container = document.getElementById('gridGalleryViewport');
+      if (!container) return;
 
-/* ================================================================
-   HORIZONTAL SHOWCASE with progress
-================================================================ */
-const hscWrap=document.getElementById('hscWrap');
-const hscFill=document.getElementById('hscFill');
-const hscNum=document.getElementById('hscNum');
-let hscTween;
-function buildShowcase(){
-  const hscPhotos=P.slice(0,6);
-  hscWrap.innerHTML='';
-  if(!hscPhotos.length){document.getElementById('hsc').style.display='none';return}
-  hscPhotos.forEach(p=>{const c=document.createElement('div');c.className='hsc-card';c.innerHTML=`<img src="${p.thumb}" alt="${safeText(p.t)}" loading="lazy" decoding="async"/><div class="hsc-card-info"><h3>${safeText(p.t)}</h3><span>${safeText(p.c)}</span></div>`;hscWrap.appendChild(c)});
-  hscTween=gsap.to(hscWrap,{x:()=>Math.min(0,-(hscWrap.scrollWidth-window.innerWidth+80)),ease:'none',scrollTrigger:{trigger:'#hsc',start:'top top',end:()=>'+='+Math.max(1,hscWrap.scrollWidth-window.innerWidth+80),scrub:1,pin:true,anticipatePin:1,invalidateOnRefresh:true,onUpdate:self=>{const progress=Math.round(self.progress*100);hscFill.style.width=progress+'%';hscNum.textContent=progress+'%'}}});
-  hscWrap.querySelectorAll('.hsc-card').forEach((card,i)=>gsap.from(card,{scale:.88,opacity:.5,rotateY:i%2===0?8:-8,duration:1,ease:'power3.out',scrollTrigger:{trigger:card,containerAnimation:hscTween,start:'left 90%',end:'left 50%',scrub:true}}));
-}
+      const filtered = activeCategory === 'all' 
+        ? photoData 
+        : photoData.filter(p => p.category === activeCategory);
 
-/* ================================================================
-   QUOTE PARALLAX
-================================================================ */
-gsap.from('#qtCt',{y:80,opacity:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:'.qt',start:'top 70%'}});
-gsap.to('#qtBg img',{yPercent:15,ease:'none',scrollTrigger:{trigger:'.qt',start:'top bottom',end:'bottom top',scrub:true}});
+      container.innerHTML = filtered.map((photo, idx) => {
+        const globalIndex = photoData.indexOf(photo);
+        return `
+          <article class="flat-card overflow-hidden group cursor-pointer" onclick="openLightbox(${globalIndex})">
+            <div class="relative aspect-[4/3] overflow-hidden bg-dark-card">
+              <img 
+                src="${photo.src}" 
+                alt="${photo.title} by Udaykiran Jammula"
+                loading="lazy"
+                decoding="async"
+                class="w-full h-full object-cover transition-transform duration-500 ease-base group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                <span class="px-3 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-dark-border text-xs font-semibold text-white flex items-center gap-1.5">
+                  <i class="ph ph-magnifying-glass-plus"></i> Inspect
+                </span>
+              </div>
+            </div>
+            <div class="p-4 flex flex-col gap-1">
+              <div class="flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-white truncate">${photo.title}</h3>
+                <span class="text-xs text-neutral-400 font-mono">${photo.year || '2025'}</span>
+              </div>
+              <div class="flex items-center justify-between text-xs text-neutral-400 font-mono">
+                <span>${photo.location || 'India'}</span>
+                <span>${photo.category}</span>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
 
-/* ================================================================
-   INSTAGRAM
-================================================================ */
-const igRow=document.getElementById('igRow');
-function buildInstagram(){
-  igRow.innerHTML='';
-  P.slice(0,8).forEach(p=>{const d=document.createElement('div');d.className='ig-th';d.innerHTML=`<img src="${p.thumb}" alt="${safeText(p.t)}" loading="lazy" decoding="async"/>`;igRow.appendChild(d)});
-  if(P.length)gsap.from('.ig-th',{scale:.8,opacity:0,stagger:.06,duration:.5,ease:'power3.out',scrollTrigger:{trigger:'.ig-row',start:'top 85%'}});
-}
+    // Category Filtering
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('bg-white', 'text-black', 'font-semibold');
+          b.classList.add('text-neutral-400');
+        });
+        btn.classList.add('bg-white', 'text-black', 'font-semibold');
+        btn.classList.remove('text-neutral-400');
 
-/* ================================================================
-   CONTACT REVEAL
-================================================================ */
-gsap.from('.ct-big, .ct-desc, .ct-email',{y:50,opacity:0,stagger:.15,duration:.8,ease:'power3.out',scrollTrigger:{trigger:'.contact',start:'top 70%'}});
-gsap.from('.ci',{y:30,opacity:0,stagger:.1,duration:.6,ease:'power3.out',scrollTrigger:{trigger:'.ct-right',start:'top 80%'}});
+        activeCategory = btn.dataset.category;
+        renderGrid();
+      });
+    });
 
-/* ================================================================
-   LIGHTBOX
-================================================================ */
-const lb=document.getElementById('lb');
-const lbImg=document.getElementById('lbImg');
-const lbT=document.getElementById('lbT');
-const lbC=document.getElementById('lbC');
+    // Tagline Reveal Section (Skill B11)
+    function initTaglineReveal() {
+      const heading = document.getElementById('taglineText');
+      if (!heading) return;
 
-function openLB(i){curI=i;showLB();lb.classList.add('on');document.body.style.overflow='hidden';lenis.stop()}
-function closeLB(){lb.classList.remove('on');document.body.style.overflow='';lenis.start()}
-function showLB(){const p=vis[curI];if(!p)return;lbImg.style.opacity=0;setTimeout(()=>{lbImg.src=p.full;lbImg.alt=p.t;lbT.textContent=p.t;lbC.textContent=`${curI+1} / ${vis.length}`;lbImg.style.opacity=1},180)}
-function navLB(d){curI=(curI+d+vis.length)%vis.length;showLB()}
+      const rawText = heading.textContent.trim();
+      const words = rawText.split(/\s+/);
+      
+      heading.innerHTML = words.map(w => `<span class="tagline-word">${w}</span> `).join('');
 
-msnr.addEventListener('click',e=>{const c=e.target.closest('.gc');if(c)openLB(+c.dataset.i)});
-document.getElementById('lbX').addEventListener('click',closeLB);
-document.getElementById('lbBg').addEventListener('click',closeLB);
-document.getElementById('lbP').addEventListener('click',()=>navLB(-1));
-document.getElementById('lbN').addEventListener('click',()=>navLB(1));
-document.addEventListener('keydown',e=>{if(!lb.classList.contains('on'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')navLB(-1);if(e.key==='ArrowRight')navLB(1)});
-let tX=0;
-lb.addEventListener('touchstart',e=>{tX=e.changedTouches[0].screenX});
-lb.addEventListener('touchend',e=>{const d=e.changedTouches[0].screenX-tX;if(Math.abs(d)>60)navLB(d>0?-1:1)});
+      const spans = heading.querySelectorAll('.tagline-word');
 
-/* ================================================================
-   SMOOTH ANCHORS
-================================================================ */
-document.querySelectorAll('a[href^="#"]').forEach(a=>{
-  a.addEventListener('click',e=>{
-    e.preventDefault();
-    const t=document.querySelector(a.getAttribute('href'));
-    if(t)lenis.scrollTo(t,{duration:1.5});
-    else lenis.scrollTo(0,{duration:1.5});
-  });
-});
-document.getElementById('toTop').addEventListener('click',()=>lenis.scrollTo(0,{duration:1.5}));
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            spans.forEach((span, i) => {
+              setTimeout(() => {
+                span.classList.add('active');
+              }, i * 45); // staggered activation on base curve
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.35 });
 
-/* ================================================================
-   INIT — the manifest is fetched after the page shell is ready.
-================================================================ */
-async function initPhotoCollection(){
-  const error=await loadPhotos();
-  if(error){msnr.innerHTML=`<div class="gal-status empty">${error}</div>`;return}
-  // Keep the existing animated counter in sync with the real collection.
-  MY.posts=P.length;
-  stEls[0].dataset.to=P.length;
-  buildGal(document.querySelector('.flt-b.on')?.dataset.f||'all');
-  buildShowcase();
-  buildInstagram();
-  ScrollTrigger.refresh();
-}
-initPhotoCollection();
-</script>
+      observer.observe(heading);
+    }
+
+    // Toggle FAQ Accordion
+    function toggleFaq(card) {
+      const content = card.querySelector('.faq-content');
+      const icon = card.querySelector('.faq-icon');
+      if (!content) return;
+
+      const isHidden = content.classList.contains('hidden');
+      if (isHidden) {
+        content.classList.remove('hidden');
+        icon.classList.remove('ph-plus');
+        icon.classList.add('ph-minus');
+      } else {
+        content.classList.add('hidden');
+        icon.classList.remove('ph-minus');
+        icon.classList.add('ph-plus');
+      }
+    }
+
+    // Inquiry Submit Simulation
+    function handleInquirySubmit(e) {
+      e.preventDefault();
+      const success = document.getElementById('formSuccessMessage');
+      if (success) {
+        success.classList.remove('hidden');
+        e.target.reset();
+      }
+    }
+
+    // Lightbox Control
+    function openLightbox(index) {
+      currentLightboxIndex = index;
+      updateLightbox();
+      const modal = document.getElementById('lightboxModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      const modal = document.getElementById('lightboxModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    function navigateLightbox(dir) {
+      currentLightboxIndex = (currentLightboxIndex + dir + photoData.length) % photoData.length;
+      updateLightbox();
+    }
+
+    function updateLightbox() {
+      const photo = photoData[currentLightboxIndex];
+      if (!photo) return;
+
+      document.getElementById('lbTitle').textContent = photo.title;
+      document.getElementById('lbLocation').textContent = photo.location || 'India';
+      document.getElementById('lbImage').src = photo.src;
+      document.getElementById('lbExif').textContent = photo.exif || '24mm · f/2.8 · 1/250s · ISO 100';
+      document.getElementById('lbEdition').textContent = photo.edition || 'Edition of 25';
+      document.getElementById('lbCounter').textContent = `${currentLightboxIndex + 1} / ${photoData.length}`;
+      
+      const acquireBtn = document.getElementById('lbAcquireBtn');
+      if (acquireBtn) {
+        acquireBtn.onclick = () => {
+          closeLightbox();
+          const notes = document.getElementById('collectorNotes');
+          if (notes) notes.value = `Inquiring about edition: "${photo.title}" (${photo.location || 'India'})`;
+          window.location.hash = '#inquiry';
+        };
+      }
+    }
+
+    // Keyboard navigation for Lightbox
+    window.addEventListener('keydown', (e) => {
+      const modal = document.getElementById('lightboxModal');
+      if (modal && !modal.classList.contains('hidden')) {
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowRight') navigateLightbox(1);
+        if (e.key === 'ArrowLeft') navigateLightbox(-1);
+      }
+    });
+
+    // Mobile Navigation Drawer Toggle
+    const mobileBtn = document.getElementById('mobileMenuBtn');
+    const mobilePanel = document.getElementById('mobileMenuPanel');
+    const mobileClose = document.getElementById('mobileMenuClose');
+
+    if (mobileBtn && mobilePanel) {
+      mobileBtn.onclick = () => mobilePanel.classList.remove('-translate-y-full');
+      if (mobileClose) mobileClose.onclick = () => mobilePanel.classList.add('-translate-y-full');
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.onclick = () => mobilePanel.classList.add('-translate-y-full');
+      });
+    }
+
+    // ==========================================
+    // THREE.JS HERO 3D OPTICAL LENS SIMULATION
+    // ==========================================
+    let heroRenderer, heroScene, heroCamera, lensGroup;
+    let targetRotationX = 0, targetRotationY = 0;
+    let apertureBlades = [];
+    let currentApertureIndex = 0;
+    const apertureFStops = ['f/2.8', 'f/4.0', 'f/5.6', 'f/8.0', 'f/11'];
+
+    function initHero3DLens() {
+      const container = document.getElementById('lens3dContainer');
+      if (!container) return;
+
+      const width = container.clientWidth || 360;
+      const height = container.clientHeight || 320;
+
+      heroScene = new THREE.Scene();
+      heroCamera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+      heroCamera.position.set(0, 0, 7.5);
+
+      heroRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      heroRenderer.setSize(width, height);
+      heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      heroRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+      container.appendChild(heroRenderer.domElement);
+
+      // Studio Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      heroScene.add(ambientLight);
+
+      const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+      keyLight.position.set(5, 5, 5);
+      heroScene.add(keyLight);
+
+      const rimLight = new THREE.DirectionalLight(0x9b9b9b, 1.5);
+      rimLight.position.set(-5, -3, -4);
+      heroScene.add(rimLight);
+
+      // Build Lens Assembly
+      lensGroup = new THREE.Group();
+
+      // Outer Metallic Lens Barrel
+      const barrelGeo = new THREE.CylinderGeometry(2.1, 2.1, 3.4, 48, 1, true);
+      const barrelMat = new THREE.MeshStandardMaterial({
+        color: 0x1f1f1f,
+        roughness: 0.25,
+        metalness: 0.9,
+      });
+      const barrelMesh = new THREE.Mesh(barrelGeo, barrelMat);
+      barrelMesh.rotation.x = Math.PI / 2;
+      lensGroup.add(barrelMesh);
+
+      // Knurled Rubber Grip Ring
+      const ringGeo = new THREE.CylinderGeometry(2.16, 2.16, 0.9, 48);
+      const ringMat = new THREE.MeshStandardMaterial({
+        color: 0x121212,
+        roughness: 0.8,
+        metalness: 0.2,
+      });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2;
+      ringMesh.position.z = -0.4;
+      lensGroup.add(ringMesh);
+
+      // Metallic Accent Bezel
+      const bezelGeo = new THREE.TorusGeometry(2.1, 0.06, 16, 64);
+      const bezelMat = new THREE.MeshStandardMaterial({
+        color: 0xffffff,
+        metalness: 0.95,
+        roughness: 0.1,
+      });
+      const bezelMesh = new THREE.Mesh(bezelGeo, bezelMat);
+      bezelMesh.position.z = 1.7;
+      lensGroup.add(bezelMesh);
+
+      // Front Convex Glass Element
+      const frontGlassGeo = new THREE.SphereGeometry(2.0, 32, 16, 0, Math.PI * 2, 0, Math.PI / 3);
+      const glassMat = new THREE.MeshPhysicalMaterial({
+        color: 0xebf4ff,
+        transmission: 0.95,
+        opacity: 1,
+        transparent: true,
+        roughness: 0.05,
+        ior: 1.52,
+        reflectivity: 0.8,
+        clearcoat: 1.0,
+      });
+      const frontGlass = new THREE.Mesh(frontGlassGeo, glassMat);
+      frontGlass.position.z = 1.0;
+      lensGroup.add(frontGlass);
+
+      // Aperture Iris Blades (8 mechanical blades)
+      const irisGroup = new THREE.Group();
+      irisGroup.position.z = 0.2;
+      const bladeGeo = new THREE.PlaneGeometry(0.7, 1.4);
+      const bladeMat = new THREE.MeshStandardMaterial({
+        color: 0x111111,
+        metalness: 0.7,
+        roughness: 0.4,
+        side: THREE.DoubleSide,
+      });
+
+      for (let i = 0; i < 8; i++) {
+        const blade = new THREE.Mesh(bladeGeo, bladeMat);
+        const angle = (i / 8) * Math.PI * 2;
+        blade.position.set(Math.cos(angle) * 0.9, Math.sin(angle) * 0.9, 0);
+        blade.rotation.z = angle + 0.35;
+        apertureBlades.push(blade);
+        irisGroup.add(blade);
+      }
+      lensGroup.add(irisGroup);
+
+      heroScene.add(lensGroup);
+
+      // Interactive mouse parallax & drag
+      let isDragging = false;
+      let prevMouseX = 0, prevMouseY = 0;
+
+      container.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (isDragging) {
+          const deltaX = e.clientX - prevMouseX;
+          const deltaY = e.clientY - prevMouseY;
+          targetRotationY += deltaX * 0.008;
+          targetRotationX += deltaY * 0.008;
+          prevMouseX = e.clientX;
+          prevMouseY = e.clientY;
+        } else {
+          const rect = container.getBoundingClientRect();
+          if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+            const normX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+            const normY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+            targetRotationY = normX * 0.45;
+            targetRotationX = normY * 0.35;
+          }
+        }
+      });
+
+      window.addEventListener('pointerup', () => { isDragging = false; });
+
+      // Cycle Aperture Button
+      const cycleBtn = document.getElementById('cycleApertureBtn');
+      const apertureLabel = document.getElementById('apertureValue');
+      if (cycleBtn) {
+        cycleBtn.addEventListener('click', () => {
+          currentApertureIndex = (currentApertureIndex + 1) % apertureFStops.length;
+          const fstop = apertureFStops[currentApertureIndex];
+          if (apertureLabel) apertureLabel.textContent = `${fstop} · 50mm`;
+          
+          const openness = 0.5 + (currentApertureIndex / apertureFStops.length) * 0.6;
+          apertureBlades.forEach((b, i) => {
+            const angle = (i / 8) * Math.PI * 2;
+            b.position.set(Math.cos(angle) * (0.6 * openness), Math.sin(angle) * (0.6 * openness), 0);
+          });
+        });
+      }
+
+      // Animation Loop with damped lerp
+      function animateHeroLens() {
+        requestAnimationFrame(animateHeroLens);
+        lensGroup.rotation.y += (targetRotationY - lensGroup.rotation.y) * 0.06;
+        lensGroup.rotation.x += (targetRotationX - lensGroup.rotation.x) * 0.06;
+        heroRenderer.render(heroScene, heroCamera);
+      }
+      animateHeroLens();
+
+      // Resize Listener
+      window.addEventListener('resize', () => {
+        if (!container) return;
+        const nw = container.clientWidth;
+        const nh = container.clientHeight;
+        heroCamera.aspect = nw / nh;
+        heroCamera.updateProjectionMatrix();
+        heroRenderer.setSize(nw, nh);
+      });
+    }
+
+    // ==========================================
+    // THREE.JS 3D SPATIAL RUNWAY EXHIBITION
+    // ==========================================
+    let spatialRenderer, spatialScene, spatialCamera;
+    let spatialQuads = [];
+    let isSpatialInitialized = false;
+    let spatialScrollProgress = 0;
+    let spatialTargetScroll = 0;
+
+    function initSpatial3DGallery() {
+      const container = document.getElementById('spatialThreeCanvas');
+      if (!container || isSpatialInitialized) return;
+
+      const width = container.clientWidth || 960;
+      const height = container.clientHeight || 540;
+
+      spatialScene = new THREE.Scene();
+      spatialScene.background = new THREE.Color(0x181818);
+
+      spatialCamera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+      spatialCamera.position.set(0, 0, 5.5);
+
+      spatialRenderer = new THREE.WebGLRenderer({ antialias: true });
+      spatialRenderer.setSize(width, height);
+      spatialRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(spatialRenderer.domElement);
+
+      const light = new THREE.AmbientLight(0xffffff, 1.2);
+      spatialScene.add(light);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+      dirLight.position.set(0, 5, 5);
+      spatialScene.add(dirLight);
+
+      // Create Curved Runway of Photographs
+      const textureLoader = new THREE.TextureLoader();
+      const radius = 9.0;
+      const totalPhotos = Math.min(photoData.length, 36);
+
+      for (let i = 0; i < totalPhotos; i++) {
+        const photo = photoData[i];
+        const angle = (i / totalPhotos) * Math.PI * 2;
+
+        const texture = textureLoader.load(photo.src);
+        texture.generateMipmaps = true;
+
+        const geo = new THREE.PlaneGeometry(2.4, 1.6);
+        const mat = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+        const mesh = new THREE.Mesh(geo, mat);
+
+        mesh.position.x = Math.sin(angle) * radius;
+        mesh.position.z = Math.cos(angle) * radius;
+        mesh.rotation.y = angle + Math.PI;
+        mesh.userData = { id: i, photo: photo };
+
+        spatialQuads.push(mesh);
+        spatialScene.add(mesh);
+      }
+
+      // Drag and Wheel interaction
+      let isDragging = false;
+      let startX = 0;
+
+      container.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const diff = e.clientX - startX;
+        spatialTargetScroll += diff * 0.002;
+        startX = e.clientX;
+      });
+
+      window.addEventListener('pointerup', () => { isDragging = false; });
+
+      container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        spatialTargetScroll += e.deltaY * 0.0015;
+      }, { passive: false });
+
+      // Click to inspect in Lightbox
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
+      container.addEventListener('click', (e) => {
+        const rect = container.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, spatialCamera);
+        const intersects = raycaster.intersectObjects(spatialQuads);
+        if (intersects.length > 0) {
+          const clickedMesh = intersects[0].object;
+          if (clickedMesh.userData && clickedMesh.userData.id !== undefined) {
+            openLightbox(clickedMesh.userData.id);
+          }
+        }
+      });
+
+      function animateSpatial() {
+        requestAnimationFrame(animateSpatial);
+        if (!isSpatialMode) return;
+
+        spatialScrollProgress += (spatialTargetScroll - spatialScrollProgress) * 0.08;
+
+        spatialQuads.forEach((mesh, i) => {
+          const total = spatialQuads.length;
+          const baseAngle = (i / total) * Math.PI * 2;
+          const currentAngle = baseAngle + spatialScrollProgress;
+          mesh.position.x = Math.sin(currentAngle) * radius;
+          mesh.position.z = Math.cos(currentAngle) * radius;
+          mesh.rotation.y = currentAngle + Math.PI;
+        });
+
+        spatialRenderer.render(spatialScene, spatialCamera);
+      }
+      animateSpatial();
+
+      isSpatialInitialized = true;
+    }
+
+    // Toggle 3D Spatial Gallery View vs Grid
+    function toggleSpatialView() {
+      isSpatialMode = !isSpatialMode;
+      const spatialView = document.getElementById('spatialGalleryViewport');
+      const gridView = document.getElementById('gridGalleryViewport');
+      const modeBtn = document.getElementById('viewModeToggle');
+      const modeText = document.getElementById('viewModeLabel');
+      const modeIcon = document.getElementById('viewModeIcon');
+      const navSpatialBtn = document.getElementById('spatialToggleText');
+
+      if (isSpatialMode) {
+        if (spatialView) spatialView.classList.remove('hidden');
+        if (gridView) gridView.classList.add('hidden');
+        if (modeText) modeText.textContent = 'Switch to Grid View';
+        if (modeIcon) {
+          modeIcon.classList.remove('ph-cube');
+          modeIcon.classList.add('ph-squares-four');
+        }
+        if (navSpatialBtn) navSpatialBtn.textContent = 'Grid View';
+        if (!isSpatialInitialized) initSpatial3DGallery();
+      } else {
+        if (spatialView) spatialView.classList.add('hidden');
+        if (gridView) gridView.classList.remove('hidden');
+        if (modeText) modeText.textContent = 'Launch 3D Runway';
+        if (modeIcon) {
+          modeIcon.classList.remove('ph-squares-four');
+          modeIcon.classList.add('ph-cube');
+        }
+        if (navSpatialBtn) navSpatialBtn.textContent = '3D Spatial View';
+      }
+    }
+
+    const toggleBtn = document.getElementById('viewModeToggle');
+    if (toggleBtn) toggleBtn.addEventListener('click', toggleSpatialView);
+
+    const spatialNavBtn = document.getElementById('spatialToggleBtn');
+    if (spatialNavBtn) spatialNavBtn.addEventListener('click', () => {
+      toggleSpatialView();
+      window.location.hash = '#gallery';
+    });
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', loadPhotographs);
+  </script>
 </body>
 </html>
