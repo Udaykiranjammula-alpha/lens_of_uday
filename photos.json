@@ -3,9 +3,9 @@
     {
       "id": 1,
       "src": "photos/other/post1.jpg",
-      "title": "Dawn at Chembra Peak",
+      "title": "Gaddamungu Frame 01",
       "category": "landscape",
-      "location": "Wayanad, Kerala",
+      "location": "Gaddamungu, India",
       "exif": "24mm · f/2.8 · 1/250s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -13,9 +13,9 @@
     {
       "id": 2,
       "src": "photos/other/post2.jpg",
-      "title": "Western Ghats Monsoon Canopy",
+      "title": "Gaddamungu Frame 02",
       "category": "nature",
-      "location": "Idukki, Kerala",
+      "location": "Gaddamungu, India",
       "exif": "35mm · f/4.0 · 1/500s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -23,9 +23,9 @@
     {
       "id": 3,
       "src": "photos/other/post3.jpg",
-      "title": "Silence of Spiti Valley",
+      "title": "Gaddamungu Frame 03",
       "category": "atmosphere",
-      "location": "Himachal Pradesh",
+      "location": "Gaddamungu, India",
       "exif": "50mm · f/5.6 · 1/125s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -33,9 +33,9 @@
     {
       "id": 4,
       "src": "photos/other/post4.jpg",
-      "title": "Munnar Tea Mist",
-      "category": "monochrome",
-      "location": "Munnar, Kerala",
+      "title": "Gaddamungu Frame 04",
+      "category": "landscape",
+      "location": "Gaddamungu, India",
       "exif": "70mm · f/8.0 · 1/60s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -43,9 +43,9 @@
     {
       "id": 5,
       "src": "photos/other/post5.jpg",
-      "title": "Nilgiri Golden Horizon",
-      "category": "landscape",
-      "location": "Nilgiris, Tamil Nadu",
+      "title": "Gaddamungu Frame 05",
+      "category": "nature",
+      "location": "Gaddamungu, India",
       "exif": "85mm · f/11 · 1/1000s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -53,9 +53,9 @@
     {
       "id": 6,
       "src": "photos/other/post6.jpg",
-      "title": "Hampi Stone Twilight",
-      "category": "nature",
-      "location": "Ballari, Karnataka",
+      "title": "Gaddamungu Frame 06",
+      "category": "atmosphere",
+      "location": "Gaddamungu, India",
       "exif": "16mm · f/2.8 · 1/250s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -63,9 +63,9 @@
     {
       "id": 7,
       "src": "photos/other/post7.jpg",
-      "title": "Kudremukh Ridge Line",
+      "title": "Gaddamungu Frame 07",
       "category": "landscape",
-      "location": "Chikkamagaluru, Karnataka",
+      "location": "Gaddamungu, India",
       "exif": "24mm · f/4.0 · 1/500s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -73,9 +73,9 @@
     {
       "id": 8,
       "src": "photos/other/post8.jpg",
-      "title": "Araku Valley Shadows",
+      "title": "Gaddamungu Frame 08",
       "category": "nature",
-      "location": "Visakhapatnam, Andhra Pradesh",
+      "location": "Gaddamungu, India",
       "exif": "35mm · f/5.6 · 1/125s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -83,9 +83,9 @@
     {
       "id": 9,
       "src": "photos/other/post9.jpg",
-      "title": "Silent Waters of Alleppey",
+      "title": "Gaddamungu Frame 09",
       "category": "atmosphere",
-      "location": "Alappuzha, Kerala",
+      "location": "Gaddamungu, India",
       "exif": "50mm · f/8.0 · 1/60s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -93,9 +93,9 @@
     {
       "id": 10,
       "src": "photos/other/post10.jpg",
-      "title": "Coorg Canopy Light",
-      "category": "monochrome",
-      "location": "Kodagu, Karnataka",
+      "title": "Gaddamungu Frame 10",
+      "category": "landscape",
+      "location": "Gaddamungu, India",
       "exif": "70mm · f/11 · 1/1000s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -103,9 +103,9 @@
     {
       "id": 11,
       "src": "photos/other/post11.jpg",
-      "title": "Dhanushkodi Ocean Wind",
-      "category": "landscape",
-      "location": "Rameswaram, Tamil Nadu",
+      "title": "Gaddamungu Frame 11",
+      "category": "nature",
+      "location": "Gaddamungu, India",
       "exif": "85mm · f/2.8 · 1/250s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -113,9 +113,9 @@
     {
       "id": 12,
       "src": "photos/other/post12.jpg",
-      "title": "Solitude of Agumbe",
-      "category": "nature",
-      "location": "Shimoga, Karnataka",
+      "title": "Gaddamungu Frame 12",
+      "category": "atmosphere",
+      "location": "Gaddamungu, India",
       "exif": "16mm · f/4.0 · 1/500s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -123,9 +123,9 @@
     {
       "id": 13,
       "src": "photos/other/post13.jpg",
-      "title": "Wayward Path in Chikmagalur",
+      "title": "Gaddamungu Frame 13",
       "category": "landscape",
-      "location": "Chikkamagaluru, Karnataka",
+      "location": "Gaddamungu, India",
       "exif": "24mm · f/5.6 · 1/125s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -133,9 +133,9 @@
     {
       "id": 14,
       "src": "photos/other/post14.jpg",
-      "title": "Shevaroy Mountain Mist",
+      "title": "Gaddamungu Frame 14",
       "category": "nature",
-      "location": "Salem, Tamil Nadu",
+      "location": "Gaddamungu, India",
       "exif": "35mm · f/8.0 · 1/60s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -143,9 +143,9 @@
     {
       "id": 15,
       "src": "photos/other/post15.jpg",
-      "title": "Palani Hills Evergreen",
+      "title": "Gaddamungu Frame 15",
       "category": "atmosphere",
-      "location": "Dindigul, Tamil Nadu",
+      "location": "Gaddamungu, India",
       "exif": "50mm · f/11 · 1/1000s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -153,9 +153,9 @@
     {
       "id": 16,
       "src": "photos/other/post16.jpg",
-      "title": "Rann of Kutch Salt Dusk",
-      "category": "monochrome",
-      "location": "Kutch, Gujarat",
+      "title": "Gaddamungu Frame 16",
+      "category": "landscape",
+      "location": "Gaddamungu, India",
       "exif": "70mm · f/2.8 · 1/250s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -163,9 +163,9 @@
     {
       "id": 17,
       "src": "photos/other/post17.jpg",
-      "title": "Vattakanal Cloud Drift",
-      "category": "landscape",
-      "location": "Kodaikanal, Tamil Nadu",
+      "title": "Gaddamungu Frame 17",
+      "category": "nature",
+      "location": "Gaddamungu, India",
       "exif": "85mm · f/4.0 · 1/500s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -173,9 +173,9 @@
     {
       "id": 18,
       "src": "photos/other/post18.jpg",
-      "title": "Yercaud Pine Cathedral",
-      "category": "nature",
-      "location": "Salem, Tamil Nadu",
+      "title": "Gaddamungu Frame 18",
+      "category": "atmosphere",
+      "location": "Gaddamungu, India",
       "exif": "16mm · f/5.6 · 1/125s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -183,9 +183,9 @@
     {
       "id": 19,
       "src": "photos/other/post19.jpg",
-      "title": "Anamalai Forest Edge",
+      "title": "Gaddamungu Frame 19",
       "category": "landscape",
-      "location": "Coimbatore, Tamil Nadu",
+      "location": "Gaddamungu, India",
       "exif": "24mm · f/8.0 · 1/60s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -193,9 +193,9 @@
     {
       "id": 20,
       "src": "photos/other/post20.jpg",
-      "title": "Kolli Hills Serpentine",
+      "title": "Gaddamungu Frame 20",
       "category": "nature",
-      "location": "Namakkal, Tamil Nadu",
+      "location": "Gaddamungu, India",
       "exif": "35mm · f/11 · 1/1000s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -203,9 +203,9 @@
     {
       "id": 21,
       "src": "photos/other/post21.jpg",
-      "title": "Nagarhole Morning Frost",
+      "title": "Gaddamungu Frame 21",
       "category": "atmosphere",
-      "location": "Mysuru, Karnataka",
+      "location": "Gaddamungu, India",
       "exif": "50mm · f/2.8 · 1/250s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -213,9 +213,9 @@
     {
       "id": 22,
       "src": "photos/other/post22.jpg",
-      "title": "Silent Valley Canopy",
-      "category": "monochrome",
-      "location": "Palakkad, Kerala",
+      "title": "Gaddamungu Frame 22",
+      "category": "landscape",
+      "location": "Gaddamungu, India",
       "exif": "70mm · f/4.0 · 1/500s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -223,9 +223,9 @@
     {
       "id": 23,
       "src": "photos/other/post23.jpg",
-      "title": "Kabini River Calm",
-      "category": "landscape",
-      "location": "Mysuru, Karnataka",
+      "title": "Gaddamungu Frame 23",
+      "category": "nature",
+      "location": "Gaddamungu, India",
       "exif": "85mm · f/5.6 · 1/125s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -233,9 +233,9 @@
     {
       "id": 24,
       "src": "photos/other/post24.jpg",
-      "title": "Biligiriranga Hillcrest",
-      "category": "nature",
-      "location": "Chamarajanagar, Karnataka",
+      "title": "Gaddamungu Frame 24",
+      "category": "atmosphere",
+      "location": "Gaddamungu, India",
       "exif": "16mm · f/8.0 · 1/60s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -243,9 +243,9 @@
     {
       "id": 25,
       "src": "photos/other/post25.jpg",
-      "title": "Jog Falls Mist Dispersion",
+      "title": "Gaddamungu Frame 25",
       "category": "landscape",
-      "location": "Shimoga, Karnataka",
+      "location": "Gaddamungu, India",
       "exif": "24mm · f/11 · 1/1000s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -253,9 +253,9 @@
     {
       "id": 26,
       "src": "photos/other/post26.jpg",
-      "title": "Meghamalai Twilight Ridge",
+      "title": "Gaddamungu Frame 26",
       "category": "nature",
-      "location": "Theni, Tamil Nadu",
+      "location": "Gaddamungu, India",
       "exif": "35mm · f/2.8 · 1/250s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -263,9 +263,9 @@
     {
       "id": 27,
       "src": "photos/other/post27.jpg",
-      "title": "Mahabaleshwar Plateau Sun",
+      "title": "Gaddamungu Frame 27",
       "category": "atmosphere",
-      "location": "Satara, Maharashtra",
+      "location": "Gaddamungu, India",
       "exif": "50mm · f/4.0 · 1/500s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -273,9 +273,9 @@
     {
       "id": 28,
       "src": "photos/other/post28.jpg",
-      "title": "Lonavala Monsoon Crest",
-      "category": "monochrome",
-      "location": "Pune, Maharashtra",
+      "title": "Gaddamungu Frame 28",
+      "category": "landscape",
+      "location": "Gaddamungu, India",
       "exif": "70mm · f/5.6 · 1/125s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -283,9 +283,9 @@
     {
       "id": 29,
       "src": "photos/other/post29.jpg",
-      "title": "Panchgani Red Earth",
-      "category": "landscape",
-      "location": "Satara, Maharashtra",
+      "title": "Gaddamungu Frame 29",
+      "category": "nature",
+      "location": "Gaddamungu, India",
       "exif": "85mm · f/8.0 · 1/60s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -293,9 +293,9 @@
     {
       "id": 30,
       "src": "photos/other/post30.jpg",
-      "title": "Kalsubai Peak Solitude",
-      "category": "nature",
-      "location": "Ahmednagar, Maharashtra",
+      "title": "Gaddamungu Frame 30",
+      "category": "atmosphere",
+      "location": "Gaddamungu, India",
       "exif": "16mm · f/11 · 1/1000s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -303,9 +303,9 @@
     {
       "id": 31,
       "src": "photos/other/post31.jpg",
-      "title": "Harishchandragad Escarpment",
+      "title": "Gaddamungu Frame 31",
       "category": "landscape",
-      "location": "Ahmednagar, Maharashtra",
+      "location": "Gaddamungu, India",
       "exif": "24mm · f/2.8 · 1/250s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -313,9 +313,9 @@
     {
       "id": 32,
       "src": "photos/other/post32.jpg",
-      "title": "Tamhini Ghat Waterfall",
+      "title": "Gaddamungu Frame 32",
       "category": "nature",
-      "location": "Pune, Maharashtra",
+      "location": "Gaddamungu, India",
       "exif": "35mm · f/4.0 · 1/500s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -323,9 +323,9 @@
     {
       "id": 33,
       "src": "photos/other/post33.jpg",
-      "title": "Torna Fort Horizon",
+      "title": "Gaddamungu Frame 33",
       "category": "atmosphere",
-      "location": "Pune, Maharashtra",
+      "location": "Gaddamungu, India",
       "exif": "50mm · f/5.6 · 1/125s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -333,9 +333,9 @@
     {
       "id": 34,
       "src": "photos/other/post34.jpg",
-      "title": "Malshej Valley Cloud Sea",
-      "category": "monochrome",
-      "location": "Thane, Maharashtra",
+      "title": "Gaddamungu Frame 34",
+      "category": "landscape",
+      "location": "Gaddamungu, India",
       "exif": "70mm · f/8.0 · 1/60s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -343,9 +343,9 @@
     {
       "id": 35,
       "src": "photos/other/post35.jpg",
-      "title": "Raigad Ridge Dawn",
-      "category": "landscape",
-      "location": "Raigad, Maharashtra",
+      "title": "Gaddamungu Frame 35",
+      "category": "nature",
+      "location": "Gaddamungu, India",
       "exif": "85mm · f/11 · 1/1000s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -353,9 +353,9 @@
     {
       "id": 36,
       "src": "photos/other/post36.jpg",
-      "title": "Kas Plateau Floral Bloom",
-      "category": "nature",
-      "location": "Satara, Maharashtra",
+      "title": "Gaddamungu Frame 36",
+      "category": "atmosphere",
+      "location": "Gaddamungu, India",
       "exif": "16mm · f/2.8 · 1/250s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -363,9 +363,9 @@
     {
       "id": 37,
       "src": "photos/other/post37.jpg",
-      "title": "Bhimashankar Forest Canopy",
+      "title": "Gaddamungu Frame 37",
       "category": "landscape",
-      "location": "Pune, Maharashtra",
+      "location": "Gaddamungu, India",
       "exif": "24mm · f/4.0 · 1/500s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -373,9 +373,9 @@
     {
       "id": 38,
       "src": "photos/other/post38.jpg",
-      "title": "Amboli Forest Mist",
+      "title": "Gaddamungu Frame 38",
       "category": "nature",
-      "location": "Sindhudurg, Maharashtra",
+      "location": "Gaddamungu, India",
       "exif": "35mm · f/5.6 · 1/125s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -383,9 +383,9 @@
     {
       "id": 39,
       "src": "photos/other/post39.jpg",
-      "title": "Gokarna Coastal Bluff",
+      "title": "Gaddamungu Frame 39",
       "category": "atmosphere",
-      "location": "Uttara Kannada, Karnataka",
+      "location": "Gaddamungu, India",
       "exif": "50mm · f/8.0 · 1/60s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -393,9 +393,9 @@
     {
       "id": 40,
       "src": "photos/other/post40.jpeg",
-      "title": "Malpe Sea Horizon",
-      "category": "monochrome",
-      "location": "Udupi, Karnataka",
+      "title": "Gaddamungu Frame 40",
+      "category": "landscape",
+      "location": "Gaddamungu, India",
       "exif": "70mm · f/11 · 1/1000s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -403,9 +403,9 @@
     {
       "id": 41,
       "src": "photos/other/post41.jpeg",
-      "title": "Maravanthe Shore Line",
-      "category": "landscape",
-      "location": "Udupi, Karnataka",
+      "title": "Gaddamungu Frame 41",
+      "category": "nature",
+      "location": "Gaddamungu, India",
       "exif": "85mm · f/2.8 · 1/250s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"
@@ -413,9 +413,9 @@
     {
       "id": 42,
       "src": "photos/other/post42.jpeg",
-      "title": "Murudeshwar Coastal Mist",
-      "category": "nature",
-      "location": "Uttara Kannada, Karnataka",
+      "title": "Gaddamungu Frame 42",
+      "category": "atmosphere",
+      "location": "Gaddamungu, India",
       "exif": "16mm · f/4.0 · 1/500s · ISO 64",
       "year": "2025",
       "edition": "Edition of 25"
@@ -423,9 +423,9 @@
     {
       "id": 43,
       "src": "photos/other/post43.jpeg",
-      "title": "Udupi Palm Twilight",
+      "title": "Gaddamungu Frame 43",
       "category": "landscape",
-      "location": "Udupi, Karnataka",
+      "location": "Gaddamungu, India",
       "exif": "24mm · f/5.6 · 1/125s · ISO 200",
       "year": "2025",
       "edition": "Edition of 25"
@@ -433,9 +433,9 @@
     {
       "id": 44,
       "src": "photos/other/post44.jpeg",
-      "title": "Netrani Island Blue",
+      "title": "Gaddamungu Frame 44",
       "category": "nature",
-      "location": "Uttara Kannada, Karnataka",
+      "location": "Gaddamungu, India",
       "exif": "35mm · f/8.0 · 1/60s · ISO 400",
       "year": "2025",
       "edition": "Edition of 25"
@@ -443,9 +443,9 @@
     {
       "id": 45,
       "src": "photos/other/post45.jpeg",
-      "title": "Karwar Bay Twilight",
+      "title": "Gaddamungu Frame 45",
       "category": "atmosphere",
-      "location": "Uttara Kannada, Karnataka",
+      "location": "Gaddamungu, India",
       "exif": "50mm · f/11 · 1/1000s · ISO 100",
       "year": "2025",
       "edition": "Edition of 25"

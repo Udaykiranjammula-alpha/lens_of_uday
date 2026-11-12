@@ -35,7 +35,7 @@ lens_of_uday/
 ├── index.html         # Main 3D landing page with Three.js viewports & UI
 ├── photos.json        # Curated index of 45+ photographs with titles & EXIF
 ├── photos/            # Archival photography directory
-│   └── other/         # High resolution captures across India
+│   └── other/         # High resolution captures across Gaddamungu village
 ├── LICENSE            # MIT License
 └── README.md          # Architecture and documentation
 ```
