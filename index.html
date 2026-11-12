@@ -31,7 +31,7 @@
   <!-- Icons: Phosphor Icons only (No Material Icons) -->
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-  <!-- Three.js for 3D Camera Optics & Spatial Gallery -->
+  <!-- Three.js for 3D Camera Optics, Spatial Gallery & Room Simulator -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <!-- Tailwind CSS CDN for styling with custom configuration -->
@@ -284,6 +284,7 @@
       <!-- Desktop Links -->
       <div class="hidden md:flex items-center gap-6 text-sm font-medium text-neutral-300">
         <a href="#gallery" class="hover:text-white transition-colors">Collection</a>
+        <a href="#simulator" class="hover:text-white transition-colors">3D Room</a>
         <a href="#craftsmanship" class="hover:text-white transition-colors">Craftsmanship</a>
         <a href="#process" class="hover:text-white transition-colors">Process</a>
         <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
@@ -319,6 +320,7 @@
     </div>
     <div class="flex flex-col gap-6 py-12">
       <a href="#gallery" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">Collection</a>
+      <a href="#simulator" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">3D Room</a>
       <a href="#craftsmanship" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">Craftsmanship</a>
       <a href="#process" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">Process</a>
       <a href="#faq" class="mobile-nav-link text-2xl font-semibold text-neutral-300 hover:text-white transition-colors">FAQ</a>
@@ -375,31 +377,41 @@
 
         </div>
 
-        <!-- Right Hero: Three.js Interactive 3D Optical Lens Viewport -->
-        <div class="lg:col-span-5 relative w-full h-[380px] sm:h-[460px] flex items-center justify-center">
+        <!-- Right Hero: Three.js Interactive 3D Optical Lens Viewport with Advanced Exploded Anatomy -->
+        <div class="lg:col-span-5 relative w-full h-[400px] sm:h-[480px] flex items-center justify-center">
           <div class="w-full h-full rounded-2xl border border-dark-border bg-dark-surface relative overflow-hidden flex flex-col">
             
-            <!-- Canvas Header / Status Bar -->
+            <!-- Canvas Header / Status Bar with Optical Telemetry -->
             <div class="flex items-center justify-between px-4 py-2.5 border-b border-dark-border bg-dark-card/50 text-xs font-mono text-neutral-400">
               <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-neutral-400"></span>
-                <span>FOCAL OPTICS SIMULATION</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>OPTICAL ASSEMBLY</span>
               </div>
-              <span id="apertureValue" class="text-neutral-300">f/2.8 · 50mm</span>
+              <div class="flex items-center gap-3">
+                <span id="focusDistanceDisplay" class="text-neutral-400">DIST: 1.0m</span>
+                <span class="text-neutral-600">|</span>
+                <span id="apertureValue" class="text-neutral-200 font-semibold">f/2.8 · 50mm</span>
+              </div>
             </div>
 
-            <!-- 3D Three.js Viewport -->
+            <!-- 3D Three.js Viewport (Interactive Lens + Particle Field) -->
             <div id="lens3dContainer" class="flex-1 w-full h-full relative cursor-grab active:cursor-grabbing">
               <!-- WebGL Canvas injected via JavaScript -->
             </div>
 
-            <!-- Interactive Optical Controls Footer -->
-            <div class="px-4 py-2.5 border-t border-dark-border bg-dark-card/40 flex items-center justify-between text-xs font-mono text-neutral-400">
-              <span>DRAG TO ROTATE LENS</span>
-              <button id="cycleApertureBtn" class="text-neutral-300 hover:text-white flex items-center gap-1 transition-colors">
-                <i class="ph ph-aperture"></i>
-                <span>CYCLE APERTURE</span>
-              </button>
+            <!-- Advanced Optical Controls Footer -->
+            <div class="px-4 py-2.5 border-t border-dark-border bg-dark-card/40 flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-neutral-400">
+              <div class="flex items-center gap-2">
+                <button id="explodeAnatomyBtn" class="px-2.5 py-1 rounded border border-dark-border bg-black text-neutral-300 hover:text-white hover:border-neutral-500 transition-all flex items-center gap-1.5">
+                  <i class="ph ph-arrows-out-cardinal text-neutral-400"></i>
+                  <span id="explodeBtnText">EXPLODE ANATOMY</span>
+                </button>
+                <button id="cycleApertureBtn" class="px-2.5 py-1 rounded border border-dark-border bg-black text-neutral-300 hover:text-white hover:border-neutral-500 transition-all flex items-center gap-1.5">
+                  <i class="ph ph-aperture text-neutral-400"></i>
+                  <span>F STOP</span>
+                </button>
+              </div>
+              <span class="text-neutral-500">DRAG ROTATES · SCROLL FOCUSES</span>
             </div>
 
           </div>
@@ -443,7 +455,6 @@
         
         <!-- Large Heading 2 text reveal on scroll -->
         <h2 id="taglineText" class="text-3xl sm:text-4xl lg:text-5xl font-semibold leading-[1.25] tracking-tight">
-          <!-- Populated and wrapped into spans via script -->
           Every photograph is an unhurried study of light, silence, and earth. We turn fleeting Indian dawns into permanent architectural pieces.
         </h2>
 
@@ -465,7 +476,7 @@
               Moments frozen in natural stillness
             </h2>
             <p class="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
-              Select any photograph to inspect exposure metadata, select bespoke framing, or acquire an edition for your space.
+              Select any photograph to inspect exposure metadata, simulate physical framing, or acquire an edition for your space.
             </p>
           </div>
 
@@ -489,12 +500,12 @@
           </div>
         </div>
 
-        <!-- 3D SPATIAL RUNWAY CANVAS VIEWPORT (WebGL Container) -->
-        <div id="spatialGalleryViewport" class="hidden w-full h-[540px] rounded-2xl border border-dark-border bg-dark-surface relative overflow-hidden mb-12">
+        <!-- 3D SPATIAL RUNWAY CANVAS VIEWPORT (WebGL Container with Atmospheric Particle Field) -->
+        <div id="spatialGalleryViewport" class="hidden w-full h-[560px] rounded-2xl border border-dark-border bg-dark-surface relative overflow-hidden mb-12">
           <div id="spatialThreeCanvas" class="w-full h-full"></div>
           
           <!-- 3D HUD / Instructions Overlay -->
-          <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-neutral-400 bg-dark-card/80 backdrop-blur-md px-4 py-2 rounded-lg border border-dark-border pointer-events-none">
+          <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-neutral-400 bg-dark-card/85 backdrop-blur-md px-4 py-2.5 rounded-lg border border-dark-border pointer-events-none">
             <div class="flex items-center gap-2">
               <i class="ph ph-hand-pointing"></i>
               <span>DRAG TO FLY · SCROLL TO ZOOM · CLICK ANY FRAME TO INSPECT</span>
@@ -506,6 +517,92 @@
         <!-- CURATED GRID VIEW (High Performance Responsive Masonry) -->
         <div id="gridGalleryViewport" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <!-- Populated dynamically via loadGalleryData() -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MODULE 3: 3D GALLERY WALL ROOM SIMULATOR (Art in Context) -->
+    <section id="simulator" class="py-20 px-6 border-b border-dark-border bg-dark-surface">
+      <div class="max-w-6xl mx-auto">
+        
+        <div class="max-w-[680px] mb-12">
+          <div class="inline-flex items-center gap-2 text-xs font-mono text-neutral-400 mb-2">
+            <i class="ph ph-house-line"></i>
+            <span>3D ARCHITECTURAL SIMULATOR</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-3">
+            Visualize scale in quiet spaces
+          </h2>
+          <p class="text-sm sm:text-base text-neutral-400 leading-relaxed font-normal">
+            Experience how any archival edition lives on a gallery wall with realistic 3D lighting conditions and bespoke frame finishes.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- 3D Room WebGL Viewport -->
+          <div class="lg:col-span-8 w-full h-[440px] sm:h-[500px] rounded-2xl border border-dark-border bg-black relative overflow-hidden flex flex-col">
+            <div id="room3dContainer" class="w-full h-full relative cursor-grab active:cursor-grabbing">
+              <!-- Three.js 3D Room Injected Here -->
+            </div>
+            
+            <div class="absolute top-4 left-4 bg-dark-card/80 backdrop-blur-md border border-dark-border px-3 py-1.5 rounded-md text-xs font-mono text-neutral-300 pointer-events-none">
+              <span id="roomActiveFrameTitle">Dawn at Chembra Peak (24 × 36 in)</span>
+            </div>
+
+            <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono text-neutral-400 bg-dark-card/80 backdrop-blur-md px-4 py-2 rounded-lg border border-dark-border pointer-events-none">
+              <span>DRAG TO PAN ROOM PERSPECTIVE</span>
+              <span id="roomLightingIndicator">GALLERY SPOTLIGHT</span>
+            </div>
+          </div>
+
+          <!-- Room Customization Controls -->
+          <div class="lg:col-span-4 flex flex-col gap-6">
+            
+            <!-- Lighting Presets -->
+            <div class="flat-card p-6 flex flex-col gap-3">
+              <label class="text-xs font-mono text-neutral-400">LIGHTING ATMOSPHERE</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button class="room-light-btn active px-3 py-2 rounded-lg border border-white bg-white text-black text-xs font-semibold transition-all" data-light="spot">Spotlight</button>
+                <button class="room-light-btn px-3 py-2 rounded-lg border border-dark-border bg-dark-card text-neutral-300 text-xs font-semibold hover:border-neutral-500 transition-all" data-light="sun">Sunlight</button>
+                <button class="room-light-btn px-3 py-2 rounded-lg border border-dark-border bg-dark-card text-neutral-300 text-xs font-semibold hover:border-neutral-500 transition-all" data-light="dusk">Twilight</button>
+              </div>
+            </div>
+
+            <!-- Framing Finish Selector -->
+            <div class="flat-card p-6 flex flex-col gap-3">
+              <label class="text-xs font-mono text-neutral-400">FRAME FINISH</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button class="room-frame-btn active px-3 py-2 rounded-lg border border-white bg-white text-black text-xs font-semibold transition-all" data-frame="teak">Natural Teak</button>
+                <button class="room-frame-btn px-3 py-2 rounded-lg border border-dark-border bg-dark-card text-neutral-300 text-xs font-semibold hover:border-neutral-500 transition-all" data-frame="black">Black Oak</button>
+                <button class="room-frame-btn px-3 py-2 rounded-lg border border-dark-border bg-dark-card text-neutral-300 text-xs font-semibold hover:border-neutral-500 transition-all" data-frame="raw">Unframed</button>
+              </div>
+            </div>
+
+            <!-- Mount Next Artwork Button -->
+            <div class="flat-card p-6 flex flex-col gap-4">
+              <div class="flex items-center justify-between text-xs font-mono text-neutral-400">
+                <span>CURATED SELECTION</span>
+                <span id="roomFrameCount">1 / 45</span>
+              </div>
+              <div class="flex items-center gap-3">
+                <button id="roomPrevArtworkBtn" class="flex-1 py-2 px-3 rounded-lg border border-dark-border bg-dark-card text-xs font-semibold text-white hover:border-neutral-500 transition-all flex items-center justify-center gap-1">
+                  <i class="ph ph-caret-left"></i>
+                  <span>Previous</span>
+                </button>
+                <button id="roomNextArtworkBtn" class="flex-1 py-2 px-3 rounded-lg border border-dark-border bg-dark-card text-xs font-semibold text-white hover:border-neutral-500 transition-all flex items-center justify-center gap-1">
+                  <span>Next frame</span>
+                  <i class="ph ph-caret-right"></i>
+                </button>
+              </div>
+              <a href="#inquiry" class="btn-main bg-white text-black text-xs py-2 px-3 w-full justify-center">
+                <span>Acquire this framed work</span>
+              </a>
+            </div>
+
+          </div>
+
         </div>
 
       </div>
@@ -826,6 +923,10 @@
         <span id="lbLocation" class="text-xs text-neutral-400 font-mono">Location</span>
       </div>
       <div class="flex items-center gap-3">
+        <button id="lbSimulateBtn" class="btn-main bg-dark-card border border-dark-border text-white text-xs py-1.5 px-3 hover:border-neutral-500">
+          <i class="ph ph-house-line"></i>
+          <span>View in 3D room</span>
+        </button>
         <button id="lbAcquireBtn" class="btn-main bg-white text-black text-xs py-1.5 px-3">
           <span>Acquire print</span>
         </button>
@@ -874,6 +975,7 @@
 
       <div class="flex items-center gap-6">
         <a href="#gallery" class="hover:text-white transition-colors">Collection</a>
+        <a href="#simulator" class="hover:text-white transition-colors">3D Room</a>
         <a href="#craftsmanship" class="hover:text-white transition-colors">Craftsmanship</a>
         <a href="#faq" class="hover:text-white transition-colors">FAQ</a>
         <a href="https://www.instagram.com/lensofuday/" target="_blank" rel="noopener" class="hover:text-white transition-colors flex items-center gap-1">
@@ -889,12 +991,13 @@
     </div>
   </footer>
 
-  <!-- SCRIPT LOGIC: Data Loading, Three.js 3D Viewports, Tagline Reveal, Lightbox -->
+  <!-- SCRIPT LOGIC: Data Loading, Advanced Three.js Engines, Exploded Anatomy, Room Simulator, Lightbox -->
   <script>
     let photoData = [];
     let activeCategory = 'all';
     let currentLightboxIndex = 0;
     let isSpatialMode = false;
+    let currentRoomPhotoIndex = 0;
 
     // Load dynamic photographs from photos.json
     async function loadPhotographs() {
@@ -904,8 +1007,9 @@
         photoData = json.photos || [];
         renderGrid();
         initTaglineReveal();
-        initHero3DLens();
+        initAdvancedHero3DLens();
         initSpatial3DGallery();
+        init3DRoomSimulator();
       } catch (err) {
         console.error('Failed to load photos.json:', err);
       }
@@ -1066,6 +1170,16 @@
           window.location.hash = '#inquiry';
         };
       }
+
+      const simBtn = document.getElementById('lbSimulateBtn');
+      if (simBtn) {
+        simBtn.onclick = () => {
+          closeLightbox();
+          currentRoomPhotoIndex = currentLightboxIndex;
+          updateRoomArtwork();
+          window.location.hash = '#simulator';
+        };
+      }
     }
 
     // Keyboard navigation for Lightbox
@@ -1091,121 +1205,193 @@
       });
     }
 
-    // ==========================================
-    // THREE.JS HERO 3D OPTICAL LENS SIMULATION
-    // ==========================================
-    let heroRenderer, heroScene, heroCamera, lensGroup;
+    // =================================================================
+    // MODULE 1, 2, 4: ADVANCED THREE.JS HERO 3D OPTICS & EXPLODED ANATOMY
+    // =================================================================
+    let heroRenderer, heroScene, heroCamera, lensMasterGroup;
     let targetRotationX = 0, targetRotationY = 0;
-    let apertureBlades = [];
-    let currentApertureIndex = 0;
-    const apertureFStops = ['f/2.8', 'f/4.0', 'f/5.6', 'f/8.0', 'f/11'];
+    let isExploded = false;
+    let explodedProgress = 0;
+    let targetExplodedProgress = 0;
 
-    function initHero3DLens() {
+    // Optical element groups for exploded view
+    let groupFrontElement, groupDoublet, groupIris, groupRearElement, groupBarrel;
+    let apertureBlades = [];
+    let currentApertureIndex = 2; // f/2.8 default
+    const apertureFStops = ['f/1.4', 'f/2.0', 'f/2.8', 'f/4.0', 'f/5.6', 'f/8.0', 'f/11', 'f/16'];
+
+    // Focus distance marks
+    const focusDistances = ['0.3m', '0.5m', '0.8m', '1.0m', '1.5m', '3.0m', '∞'];
+    let focusDistanceIndex = 3;
+
+    // Atmospheric particle field for Hero
+    let heroParticlesMesh;
+
+    function initAdvancedHero3DLens() {
       const container = document.getElementById('lens3dContainer');
       if (!container) return;
 
       const width = container.clientWidth || 360;
-      const height = container.clientHeight || 320;
+      const height = container.clientHeight || 340;
 
       heroScene = new THREE.Scene();
       heroCamera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
-      heroCamera.position.set(0, 0, 7.5);
+      heroCamera.position.set(0, 0, 8.2);
 
-      heroRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      heroRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
       heroRenderer.setSize(width, height);
       heroRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       heroRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+      heroRenderer.toneMappingExposure = 1.1;
       container.appendChild(heroRenderer.domElement);
 
-      // Studio Lighting
-      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      // Studio Three Point Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
       heroScene.add(ambientLight);
 
-      const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
-      keyLight.position.set(5, 5, 5);
+      const keyLight = new THREE.DirectionalLight(0xffffff, 2.4);
+      keyLight.position.set(5, 6, 5);
       heroScene.add(keyLight);
 
-      const rimLight = new THREE.DirectionalLight(0x9b9b9b, 1.5);
-      rimLight.position.set(-5, -3, -4);
+      const rimLight = new THREE.DirectionalLight(0x9b9b9b, 1.8);
+      rimLight.position.set(-6, -4, -4);
       heroScene.add(rimLight);
 
-      // Build Lens Assembly
-      lensGroup = new THREE.Group();
+      // Master Lens Group
+      lensMasterGroup = new THREE.Group();
 
-      // Outer Metallic Lens Barrel
+      // Subgroup 1: Outer Metallic Barrel
+      groupBarrel = new THREE.Group();
       const barrelGeo = new THREE.CylinderGeometry(2.1, 2.1, 3.4, 48, 1, true);
       const barrelMat = new THREE.MeshStandardMaterial({
         color: 0x1f1f1f,
-        roughness: 0.25,
-        metalness: 0.9,
+        roughness: 0.22,
+        metalness: 0.92,
       });
       const barrelMesh = new THREE.Mesh(barrelGeo, barrelMat);
       barrelMesh.rotation.x = Math.PI / 2;
-      lensGroup.add(barrelMesh);
+      groupBarrel.add(barrelMesh);
 
-      // Knurled Rubber Grip Ring
+      // Knurled Rubber Grip Ring with Distance Scale
       const ringGeo = new THREE.CylinderGeometry(2.16, 2.16, 0.9, 48);
       const ringMat = new THREE.MeshStandardMaterial({
         color: 0x121212,
-        roughness: 0.8,
-        metalness: 0.2,
+        roughness: 0.85,
+        metalness: 0.25,
       });
       const ringMesh = new THREE.Mesh(ringGeo, ringMat);
       ringMesh.rotation.x = Math.PI / 2;
       ringMesh.position.z = -0.4;
-      lensGroup.add(ringMesh);
+      groupBarrel.add(ringMesh);
 
-      // Metallic Accent Bezel
-      const bezelGeo = new THREE.TorusGeometry(2.1, 0.06, 16, 64);
+      // Front Titanium Bezel
+      const bezelGeo = new THREE.TorusGeometry(2.1, 0.07, 16, 64);
       const bezelMat = new THREE.MeshStandardMaterial({
         color: 0xffffff,
-        metalness: 0.95,
-        roughness: 0.1,
+        metalness: 0.96,
+        roughness: 0.12,
       });
       const bezelMesh = new THREE.Mesh(bezelGeo, bezelMat);
       bezelMesh.position.z = 1.7;
-      lensGroup.add(bezelMesh);
+      groupBarrel.add(bezelMesh);
+      lensMasterGroup.add(groupBarrel);
 
-      // Front Convex Glass Element
+      // Subgroup 2: Front Aspherical Glass Element
+      groupFrontElement = new THREE.Group();
       const frontGlassGeo = new THREE.SphereGeometry(2.0, 32, 16, 0, Math.PI * 2, 0, Math.PI / 3);
       const glassMat = new THREE.MeshPhysicalMaterial({
-        color: 0xebf4ff,
-        transmission: 0.95,
+        color: 0xebf5ff,
+        transmission: 0.96,
         opacity: 1,
         transparent: true,
-        roughness: 0.05,
+        roughness: 0.04,
         ior: 1.52,
-        reflectivity: 0.8,
+        reflectivity: 0.85,
         clearcoat: 1.0,
       });
       const frontGlass = new THREE.Mesh(frontGlassGeo, glassMat);
       frontGlass.position.z = 1.0;
-      lensGroup.add(frontGlass);
+      groupFrontElement.add(frontGlass);
+      lensMasterGroup.add(groupFrontElement);
 
-      // Aperture Iris Blades (8 mechanical blades)
-      const irisGroup = new THREE.Group();
-      irisGroup.position.z = 0.2;
-      const bladeGeo = new THREE.PlaneGeometry(0.7, 1.4);
+      // Subgroup 3: Cemented Doublet Lens Group
+      groupDoublet = new THREE.Group();
+      const doubletGeo = new THREE.CylinderGeometry(1.6, 1.7, 0.35, 32);
+      const doubletMat = new THREE.MeshPhysicalMaterial({
+        color: 0xd9eaff,
+        transmission: 0.92,
+        transparent: true,
+        roughness: 0.06,
+        ior: 1.62,
+        clearcoat: 0.9,
+      });
+      const doubletMesh = new THREE.Mesh(doubletGeo, doubletMat);
+      doubletMesh.rotation.x = Math.PI / 2;
+      doubletMesh.position.z = 0.55;
+      groupDoublet.add(doubletMesh);
+      lensMasterGroup.add(groupDoublet);
+
+      // Subgroup 4: 9-Blade Mechanical Aperture Iris
+      groupIris = new THREE.Group();
+      groupIris.position.z = 0.15;
+      const bladeGeo = new THREE.PlaneGeometry(0.72, 1.45);
       const bladeMat = new THREE.MeshStandardMaterial({
-        color: 0x111111,
-        metalness: 0.7,
-        roughness: 0.4,
+        color: 0x141414,
+        metalness: 0.85,
+        roughness: 0.35,
         side: THREE.DoubleSide,
       });
 
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 9; i++) {
         const blade = new THREE.Mesh(bladeGeo, bladeMat);
-        const angle = (i / 8) * Math.PI * 2;
-        blade.position.set(Math.cos(angle) * 0.9, Math.sin(angle) * 0.9, 0);
-        blade.rotation.z = angle + 0.35;
+        const angle = (i / 9) * Math.PI * 2;
+        blade.position.set(Math.cos(angle) * 0.85, Math.sin(angle) * 0.85, 0);
+        blade.rotation.z = angle + 0.38;
         apertureBlades.push(blade);
-        irisGroup.add(blade);
+        groupIris.add(blade);
       }
-      lensGroup.add(irisGroup);
+      lensMasterGroup.add(groupIris);
 
-      heroScene.add(lensGroup);
+      // Subgroup 5: Rear Telecentric Element Group
+      groupRearElement = new THREE.Group();
+      const rearGlassGeo = new THREE.CylinderGeometry(1.5, 1.5, 0.3, 32);
+      const rearGlass = new THREE.Mesh(rearGlassGeo, glassMat);
+      rearGlass.rotation.x = Math.PI / 2;
+      rearGlass.position.z = -1.1;
+      groupRearElement.add(rearGlass);
+      lensMasterGroup.add(groupRearElement);
 
-      // Interactive mouse parallax & drag
+      heroScene.add(lensMasterGroup);
+
+      // MODULE 2: Atmospheric Light Motes (Instanced Particles)
+      const particleCount = 280;
+      const particleGeo = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      const velocities = new Float32Array(particleCount * 3);
+
+      for (let i = 0; i < particleCount; i++) {
+        positions[i * 3] = (Math.random() - 0.5) * 12;
+        positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
+
+        velocities[i * 3] = (Math.random() - 0.5) * 0.004;
+        velocities[i * 3 + 1] = Math.random() * 0.005 + 0.002;
+        velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.004;
+      }
+
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const particleMat = new THREE.PointsMaterial({
+        color: 0x9b9b9b,
+        size: 0.055,
+        transparent: true,
+        opacity: 0.65,
+        blending: THREE.AdditiveBlending,
+      });
+
+      heroParticlesMesh = new THREE.Points(particleGeo, particleMat);
+      heroScene.add(heroParticlesMesh);
+
+      // Interactive Mouse Parallax & Drag
       let isDragging = false;
       let prevMouseX = 0, prevMouseY = 0;
 
@@ -1219,8 +1405,8 @@
         if (isDragging) {
           const deltaX = e.clientX - prevMouseX;
           const deltaY = e.clientY - prevMouseY;
-          targetRotationY += deltaX * 0.008;
-          targetRotationX += deltaY * 0.008;
+          targetRotationY += deltaX * 0.007;
+          targetRotationX += deltaY * 0.007;
           prevMouseX = e.clientX;
           prevMouseY = e.clientY;
         } else {
@@ -1228,13 +1414,38 @@
           if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
             const normX = (e.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
             const normY = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-            targetRotationY = normX * 0.45;
-            targetRotationX = normY * 0.35;
+            targetRotationY = normX * 0.42;
+            targetRotationX = normY * 0.32;
           }
         }
       });
 
       window.addEventListener('pointerup', () => { isDragging = false; });
+
+      // Wheel interaction changes focus distance scale
+      container.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        if (e.deltaY > 0) {
+          focusDistanceIndex = Math.min(focusDistances.length - 1, focusDistanceIndex + 1);
+        } else {
+          focusDistanceIndex = Math.max(0, focusDistanceIndex - 1);
+        }
+        const distLabel = document.getElementById('focusDistanceDisplay');
+        if (distLabel) distLabel.textContent = `DIST: ${focusDistances[focusDistanceIndex]}`;
+      }, { passive: false });
+
+      // Explode Anatomy Button Toggle
+      const explodeBtn = document.getElementById('explodeAnatomyBtn');
+      const explodeBtnText = document.getElementById('explodeBtnText');
+      if (explodeBtn) {
+        explodeBtn.addEventListener('click', () => {
+          isExploded = !isExploded;
+          targetExplodedProgress = isExploded ? 1.0 : 0.0;
+          if (explodeBtnText) {
+            explodeBtnText.textContent = isExploded ? 'ASSEMBLE LENS' : 'EXPLODE ANATOMY';
+          }
+        });
+      }
 
       // Cycle Aperture Button
       const cycleBtn = document.getElementById('cycleApertureBtn');
@@ -1245,19 +1456,43 @@
           const fstop = apertureFStops[currentApertureIndex];
           if (apertureLabel) apertureLabel.textContent = `${fstop} · 50mm`;
           
-          const openness = 0.5 + (currentApertureIndex / apertureFStops.length) * 0.6;
+          const openness = 0.4 + (currentApertureIndex / apertureFStops.length) * 0.65;
           apertureBlades.forEach((b, i) => {
-            const angle = (i / 8) * Math.PI * 2;
-            b.position.set(Math.cos(angle) * (0.6 * openness), Math.sin(angle) * (0.6 * openness), 0);
+            const angle = (i / 9) * Math.PI * 2;
+            b.position.set(Math.cos(angle) * (0.65 * openness), Math.sin(angle) * (0.65 * openness), 0);
           });
         });
       }
 
-      // Animation Loop with damped lerp
+      // Delta Clamped Animation Loop
+      const clock = new THREE.Clock();
+
       function animateHeroLens() {
         requestAnimationFrame(animateHeroLens);
-        lensGroup.rotation.y += (targetRotationY - lensGroup.rotation.y) * 0.06;
-        lensGroup.rotation.x += (targetRotationX - lensGroup.rotation.x) * 0.06;
+        const delta = Math.min(clock.getDelta(), 0.05);
+
+        // Interpolate rotation
+        lensMasterGroup.rotation.y += (targetRotationY - lensMasterGroup.rotation.y) * 0.06;
+        lensMasterGroup.rotation.x += (targetRotationX - lensMasterGroup.rotation.x) * 0.06;
+
+        // Interpolate exploded view along optical axis
+        explodedProgress += (targetExplodedProgress - explodedProgress) * 0.08;
+        groupFrontElement.position.z = 1.9 * explodedProgress;
+        groupDoublet.position.z = 0.9 * explodedProgress;
+        groupRearElement.position.z = -1.6 * explodedProgress;
+        groupBarrel.position.z = -2.2 * explodedProgress;
+
+        // Animate atmospheric light motes
+        const posAttr = heroParticlesMesh.geometry.attributes.position;
+        const posArray = posAttr.array;
+        for (let i = 0; i < particleCount; i++) {
+          posArray[i * 3 + 1] += velocities[i * 3 + 1];
+          if (posArray[i * 3 + 1] > 5) posArray[i * 3 + 1] = -5;
+          posArray[i * 3] += velocities[i * 3];
+          posArray[i * 3 + 2] += velocities[i * 3 + 2];
+        }
+        posAttr.needsUpdate = true;
+
         heroRenderer.render(heroScene, heroCamera);
       }
       animateHeroLens();
@@ -1287,7 +1522,7 @@
       if (!container || isSpatialInitialized) return;
 
       const width = container.clientWidth || 960;
-      const height = container.clientHeight || 540;
+      const height = container.clientHeight || 560;
 
       spatialScene = new THREE.Scene();
       spatialScene.background = new THREE.Color(0x181818);
@@ -1295,7 +1530,7 @@
       spatialCamera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
       spatialCamera.position.set(0, 0, 5.5);
 
-      spatialRenderer = new THREE.WebGLRenderer({ antialias: true });
+      spatialRenderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
       spatialRenderer.setSize(width, height);
       spatialRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       container.appendChild(spatialRenderer.domElement);
@@ -1303,7 +1538,7 @@
       const light = new THREE.AmbientLight(0xffffff, 1.2);
       spatialScene.add(light);
 
-      const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.1);
       dirLight.position.set(0, 5, 5);
       spatialScene.add(dirLight);
 
@@ -1401,7 +1636,6 @@
       isSpatialMode = !isSpatialMode;
       const spatialView = document.getElementById('spatialGalleryViewport');
       const gridView = document.getElementById('gridGalleryViewport');
-      const modeBtn = document.getElementById('viewModeToggle');
       const modeText = document.getElementById('viewModeLabel');
       const modeIcon = document.getElementById('viewModeIcon');
       const navSpatialBtn = document.getElementById('spatialToggleText');
@@ -1436,6 +1670,240 @@
       toggleSpatialView();
       window.location.hash = '#gallery';
     });
+
+    // =================================================================
+    // MODULE 3: 3D ARCHITECTURAL GALLERY WALL ROOM SIMULATOR
+    // =================================================================
+    let roomRenderer, roomScene, roomCamera;
+    let roomFrameMesh, roomPictureMesh;
+    let roomSpotlight, roomSunlight, roomDuskLight;
+    let currentFrameFinish = 'teak'; // 'teak', 'black', 'raw'
+    let currentLightingPreset = 'spot'; // 'spot', 'sun', 'dusk'
+    let roomTargetRotY = 0, roomTargetRotX = 0;
+
+    function init3DRoomSimulator() {
+      const container = document.getElementById('room3dContainer');
+      if (!container) return;
+
+      const width = container.clientWidth || 640;
+      const height = container.clientHeight || 460;
+
+      roomScene = new THREE.Scene();
+      roomScene.background = new THREE.Color(0x0a0a0a);
+
+      roomCamera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+      roomCamera.position.set(0, 0, 4.8);
+
+      roomRenderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+      roomRenderer.setSize(width, height);
+      roomRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      roomRenderer.shadowMap.enabled = true;
+      roomRenderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      container.appendChild(roomRenderer.domElement);
+
+      // Back Concrete Gallery Wall
+      const wallGeo = new THREE.PlaneGeometry(12, 8);
+      const wallMat = new THREE.MeshStandardMaterial({
+        color: 0x1f1f1f,
+        roughness: 0.9,
+        metalness: 0.1,
+      });
+      const wallMesh = new THREE.Mesh(wallGeo, wallMat);
+      wallMesh.position.z = -0.5;
+      wallMesh.receiveShadow = true;
+      roomScene.add(wallMesh);
+
+      // Floor Plane
+      const floorGeo = new THREE.PlaneGeometry(12, 8);
+      const floorMat = new THREE.MeshStandardMaterial({
+        color: 0x121212,
+        roughness: 0.4,
+        metalness: 0.2,
+      });
+      const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+      floorMesh.rotation.x = -Math.PI / 2;
+      floorMesh.position.y = -2.2;
+      floorMesh.receiveShadow = true;
+      roomScene.add(floorMesh);
+
+      // Framed Picture Mesh Assembly
+      const frameGroup = new THREE.Group();
+
+      // Outer Frame
+      const frameGeo = new THREE.BoxGeometry(2.8, 1.9, 0.1);
+      const frameMat = new THREE.MeshStandardMaterial({
+        color: 0x8b5a2b, // Teak
+        roughness: 0.6,
+        metalness: 0.1,
+      });
+      roomFrameMesh = new THREE.Mesh(frameGeo, frameMat);
+      roomFrameMesh.castShadow = true;
+      frameGroup.add(roomFrameMesh);
+
+      // Inner Photographic Canvas
+      const picGeo = new THREE.PlaneGeometry(2.5, 1.6);
+      const textureLoader = new THREE.TextureLoader();
+      const initialSrc = photoData[0] ? photoData[0].src : 'photos/other/post1.jpg';
+      const picTex = textureLoader.load(initialSrc);
+      const picMat = new THREE.MeshStandardMaterial({
+        map: picTex,
+        roughness: 0.2,
+        metalness: 0.05,
+      });
+      roomPictureMesh = new THREE.Mesh(picGeo, picMat);
+      roomPictureMesh.position.z = 0.052;
+      frameGroup.add(roomPictureMesh);
+
+      roomScene.add(frameGroup);
+
+      // Lighting Systems
+      const ambient = new THREE.AmbientLight(0xffffff, 0.35);
+      roomScene.add(ambient);
+
+      // 1. Gallery Spotlight (focused cone with shadow)
+      roomSpotlight = new THREE.SpotLight(0xfffaed, 3.2, 10, Math.PI / 5, 0.4, 1.2);
+      roomSpotlight.position.set(0, 3.2, 2.5);
+      roomSpotlight.target = frameGroup;
+      roomSpotlight.castShadow = true;
+      roomSpotlight.shadow.mapSize.width = 1024;
+      roomSpotlight.shadow.mapSize.height = 1024;
+      roomScene.add(roomSpotlight);
+
+      // 2. Sunlight
+      roomSunlight = new THREE.DirectionalLight(0xffeedd, 0.0);
+      roomSunlight.position.set(5, 4, 3);
+      roomScene.add(roomSunlight);
+
+      // 3. Twilight Light
+      roomDuskLight = new THREE.PointLight(0x4466aa, 0.0, 8);
+      roomDuskLight.position.set(-3, 1, 2);
+      roomScene.add(roomDuskLight);
+
+      // Drag room perspective
+      let isDragging = false;
+      let prevX = 0, prevY = 0;
+
+      container.addEventListener('pointerdown', (e) => {
+        isDragging = true;
+        prevX = e.clientX;
+        prevY = e.clientY;
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - prevX;
+        const dy = e.clientY - prevY;
+        roomTargetRotY += dx * 0.005;
+        roomTargetRotX += dy * 0.005;
+        roomTargetRotY = Math.max(-0.4, Math.min(0.4, roomTargetRotY));
+        roomTargetRotX = Math.max(-0.25, Math.min(0.25, roomTargetRotX));
+        prevX = e.clientX;
+        prevY = e.clientY;
+      });
+
+      window.addEventListener('pointerup', () => { isDragging = false; });
+
+      // Frame selection buttons
+      document.querySelectorAll('.room-frame-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.room-frame-btn').forEach(b => {
+            b.classList.remove('active', 'border-white', 'bg-white', 'text-black');
+            b.classList.add('border-dark-border', 'bg-dark-card', 'text-neutral-300');
+          });
+          btn.classList.add('active', 'border-white', 'bg-white', 'text-black');
+          btn.classList.remove('border-dark-border', 'bg-dark-card', 'text-neutral-300');
+
+          currentFrameFinish = btn.dataset.frame;
+          if (currentFrameFinish === 'teak') {
+            roomFrameMesh.material.color.setHex(0x8b5a2b);
+            roomFrameMesh.visible = true;
+          } else if (currentFrameFinish === 'black') {
+            roomFrameMesh.material.color.setHex(0x181818);
+            roomFrameMesh.visible = true;
+          } else if (currentFrameFinish === 'raw') {
+            roomFrameMesh.visible = false;
+          }
+        });
+      });
+
+      // Lighting preset buttons
+      document.querySelectorAll('.room-light-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.room-light-btn').forEach(b => {
+            b.classList.remove('active', 'border-white', 'bg-white', 'text-black');
+            b.classList.add('border-dark-border', 'bg-dark-card', 'text-neutral-300');
+          });
+          btn.classList.add('active', 'border-white', 'bg-white', 'text-black');
+          btn.classList.remove('border-dark-border', 'bg-dark-card', 'text-neutral-300');
+
+          currentLightingPreset = btn.dataset.light;
+          const indicator = document.getElementById('roomLightingIndicator');
+
+          if (currentLightingPreset === 'spot') {
+            roomSpotlight.intensity = 3.2;
+            roomSunlight.intensity = 0.0;
+            roomDuskLight.intensity = 0.0;
+            if (indicator) indicator.textContent = 'GALLERY SPOTLIGHT';
+          } else if (currentLightingPreset === 'sun') {
+            roomSpotlight.intensity = 1.0;
+            roomSunlight.intensity = 2.8;
+            roomDuskLight.intensity = 0.0;
+            if (indicator) indicator.textContent = 'MORNING SUNLIGHT';
+          } else if (currentLightingPreset === 'dusk') {
+            roomSpotlight.intensity = 0.6;
+            roomSunlight.intensity = 0.0;
+            roomDuskLight.intensity = 2.4;
+            if (indicator) indicator.textContent = 'TWILIGHT WARMTH';
+          }
+        });
+      });
+
+      // Next / Prev artwork buttons
+      const nextBtn = document.getElementById('roomNextArtworkBtn');
+      const prevBtn = document.getElementById('roomPrevArtworkBtn');
+      if (nextBtn) nextBtn.onclick = () => {
+        currentRoomPhotoIndex = (currentRoomPhotoIndex + 1) % photoData.length;
+        updateRoomArtwork();
+      };
+      if (prevBtn) prevBtn.onclick = () => {
+        currentRoomPhotoIndex = (currentRoomPhotoIndex - 1 + photoData.length) % photoData.length;
+        updateRoomArtwork();
+      };
+
+      function animateRoom() {
+        requestAnimationFrame(animateRoom);
+        roomCamera.position.x += (roomTargetRotY * 3.5 - roomCamera.position.x) * 0.06;
+        roomCamera.position.y += (-roomTargetRotX * 2.0 - roomCamera.position.y) * 0.06;
+        roomCamera.lookAt(0, 0, 0);
+        roomRenderer.render(roomScene, roomCamera);
+      }
+      animateRoom();
+
+      window.addEventListener('resize', () => {
+        if (!container) return;
+        const nw = container.clientWidth;
+        const nh = container.clientHeight;
+        roomCamera.aspect = nw / nh;
+        roomCamera.updateProjectionMatrix();
+        roomRenderer.setSize(nw, nh);
+      });
+    }
+
+    function updateRoomArtwork() {
+      const photo = photoData[currentRoomPhotoIndex];
+      if (!photo || !roomPictureMesh) return;
+
+      const loader = new THREE.TextureLoader();
+      loader.load(photo.src, (tex) => {
+        roomPictureMesh.material.map = tex;
+        roomPictureMesh.material.needsUpdate = true;
+      });
+
+      const titleEl = document.getElementById('roomActiveFrameTitle');
+      const countEl = document.getElementById('roomFrameCount');
+      if (titleEl) titleEl.textContent = `${photo.title} (24 × 36 in)`;
+      if (countEl) countEl.textContent = `${currentRoomPhotoIndex + 1} / ${photoData.length}`;
+    }
 
     // Initialize application on load
     window.addEventListener('DOMContentLoaded', loadPhotographs);
