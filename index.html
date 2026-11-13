@@ -288,6 +288,14 @@
     ]
   }
   </script>
+  <!-- Official Behold Instagram Widget Script -->
+  <script>
+    (() => {
+      if(window.__bhldScript)return;window.__bhldScript=true;
+      const d=document,s=d.createElement("script");s.type="module";
+      s.src="https://w.behold.so/widget.js";setTimeout(()=>{d.head.append(s);},0);
+    })();
+  </script>
 </head>
 <body class="bg-black text-white antialiased selection:bg-neutral-800 selection:text-white">
 
@@ -993,6 +1001,24 @@
             </a>
           </div>
 
+          <!-- Official Behold Live Instagram Stream Widget -->
+          <div class="pt-6 border-t border-dark-border">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2 text-xs font-mono text-neutral-400">
+                <i class="ph ph-instagram-logo text-emerald-400 text-base"></i>
+                <span>LIVE INSTAGRAM DISPATCH · @LENSOFUDAY</span>
+              </div>
+              <a href="https://www.instagram.com/lensofuday/" target="_blank" rel="noopener" class="text-xs font-mono text-neutral-400 hover:text-white flex items-center gap-1 transition-colors">
+                <span>View Instagram</span>
+                <i class="ph ph-arrow-up-right text-xs"></i>
+              </a>
+            </div>
+            
+            <div class="rounded-xl overflow-hidden border border-dark-border bg-black/60 p-3">
+              <behold-widget feed-id="T76f21mAAeVJhrmPfFWS"></behold-widget>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -1010,11 +1036,15 @@
         <span id="lbLocation" class="text-xs text-neutral-400 font-mono">Location</span>
       </div>
       <div class="flex items-center gap-3">
+        <a id="lbInstagramLink" href="https://www.instagram.com/lensofuday/" target="_blank" rel="noopener" class="hidden btn-main bg-dark-card border border-dark-border text-neutral-300 hover:text-white text-xs py-1.5 px-3 hover:border-neutral-500 items-center gap-1.5 transition-all">
+          <i class="ph ph-instagram-logo text-emerald-400"></i>
+          <span>Open on Instagram</span>
+          <i class="ph ph-arrow-up-right text-xs"></i>
+        </a>
         <button id="lbSimulateBtn" class="btn-main bg-dark-card border border-dark-border text-white text-xs py-1.5 px-3 hover:border-neutral-500">
           <i class="ph ph-house-line"></i>
           <span>View in 3D room</span>
         </button>
-        
         <button onclick="closeLightbox()" class="w-9 h-9 rounded-lg border border-dark-border bg-dark-card text-neutral-300 hover:text-white flex items-center justify-center">
           <i class="ph ph-x text-lg"></i>
         </button>
@@ -1174,8 +1204,9 @@
     // ── LIVE PHOTO FETCHING & INSTAGRAM SYNC ENGINE ───────────────────────
     const LIVE_FEED_CONFIG = {
       localEndpoint: 'photos.json',
+      defaultFeedUrl: 'https://feeds.behold.so/T76f21mAAeVJhrmPfFWS',
       get feedUrl() {
-        return localStorage.getItem('uday_live_feed_url') || '';
+        return localStorage.getItem('uday_live_feed_url') || this.defaultFeedUrl;
       },
       set feedUrl(val) {
         if (val && val.trim().length > 0) {
@@ -1226,16 +1257,33 @@
               const items = Array.isArray(feedData) ? feedData : (feedData.data || feedData.posts || []);
               
               const livePhotos = items.map((item, i) => {
-                const mediaUrl = item.mediaUrl || item.imageUrl || item.src || (item.media && item.media[0] && item.media[0].url);
+                // Extract highest quality Behold image URL
+                const mediaUrl = (item.sizes && item.sizes.large && item.sizes.large.mediaUrl) 
+                              || (item.sizes && item.sizes.full && item.sizes.full.mediaUrl) 
+                              || item.mediaUrl 
+                              || item.imageUrl;
                 if (!mediaUrl) return null;
-                const caption = item.caption || item.text || `Live Gaddamunugu Frame ${i + 1}`;
+
+                const rawCap = item.caption || item.prunedCaption || `Gaddamunugu Live Frame ${i + 1}`;
+                const firstLine = rawCap.split('\n')[0].replace(/[😀-🙏🌀-🗿🚀-🛿🜀-🝿🞀-🟿🠀-🣿🤀-🧿🨀-🩯🩰-🫿☀-⛿✀-➿]/gu, '').trim();
+                const title = firstLine.length > 36 ? firstLine.slice(0, 36) + '...' : (firstLine || `Gaddamunugu Frame ${String(i + 1).padStart(2, '0')}`);
+
+                // Smart Category Classification
+                const lower = rawCap.toLowerCase();
+                let cat = 'landscape';
+                if (lower.includes('moon') || lower.includes('sky') || lower.includes('sunset') || lower.includes('sun') || lower.includes('storm')) {
+                  cat = 'atmosphere';
+                } else if (lower.includes('hill') || lower.includes('hills') || lower.includes('tree') || lower.includes('trees') || lower.includes('nature') || lower.includes('forest')) {
+                  cat = 'nature';
+                }
+
                 return {
                   id: `live-${item.id || i + 1}`,
                   src: mediaUrl,
-                  title: caption.length > 32 ? caption.slice(0, 32) + '...' : caption,
-                  category: 'landscape',
+                  title: title,
+                  category: cat,
                   location: 'Gaddamunugu, India',
-                  exif: 'Prime 50mm · Natural Light · Live Dispatch',
+                  exif: '50mm · f/1.8 · Natural Light · Instagram Live',
                   year: '2026',
                   edition: 'Gaddamunugu Archive',
                   isLive: true,
@@ -1547,8 +1595,20 @@
       document.getElementById('lbLocation').textContent = photo.location || 'Gaddamunugu, India';
       document.getElementById('lbImage').src = photo.src;
       document.getElementById('lbExif').textContent = photo.exif || '24mm · f/2.8 · 1/250s · ISO 100';
-      document.getElementById('lbEdition').textContent = 'Gaddamunugu Archive';
+      document.getElementById('lbEdition').textContent = photo.isLive ? 'Instagram Live Dispatch' : 'Gaddamunugu Archive';
       document.getElementById('lbCounter').textContent = `${currentLightboxIndex + 1} / ${photoData.length}`;
+      
+      const igLink = document.getElementById('lbInstagramLink');
+      if (igLink) {
+        if (photo.permalink) {
+          igLink.href = photo.permalink;
+          igLink.classList.remove('hidden');
+          igLink.classList.add('inline-flex');
+        } else {
+          igLink.classList.add('hidden');
+          igLink.classList.remove('inline-flex');
+        }
+      }
 
       const simBtn = document.getElementById('lbSimulateBtn');
       if (simBtn) {
