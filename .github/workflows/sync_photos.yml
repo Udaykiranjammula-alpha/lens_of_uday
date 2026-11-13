@@ -1,0 +1,36 @@
+name: Auto Sync Photos
+
+on:
+  workflow_dispatch: # Allows manual 1-click trigger from GitHub Actions tab
+  schedule:
+    - cron: '0 */6 * * *' # Automatically runs every 6 hours
+  push:
+    paths:
+      - 'photos/**'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-photos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Photo Catalog Sync
+        run: node scripts/sync_photos.js
+
+      - name: Commit & Push Changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add photos.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: auto-sync photos catalog [skip ci]" && git push origin main)

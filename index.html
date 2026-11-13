@@ -543,9 +543,16 @@
         <!-- Gallery Header & Controls -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div class="max-w-[680px]">
-            <div class="inline-flex items-center gap-2 text-xs font-mono text-neutral-400 mb-2">
-              <i class="ph ph-frame-corners"></i>
-              <span>PHOTOGRAPHY COLLECTION</span>
+            <div class="inline-flex flex-wrap items-center gap-2 text-xs font-mono text-neutral-400 mb-2">
+              <div class="flex items-center gap-1.5">
+                <i class="ph ph-frame-corners"></i>
+                <span>PHOTOGRAPHY COLLECTION</span>
+              </div>
+              <span class="text-neutral-600 hidden sm:inline">·</span>
+              <div class="flex items-center gap-1.5 text-emerald-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span id="liveSyncStatus">LIVE FEED ACTIVE · 45 FRAMES</span>
+              </div>
             </div>
             <h2 class="text-3xl sm:text-4xl font-semibold text-white tracking-tight mb-3">
               Moments frozen in natural stillness
@@ -570,6 +577,17 @@
             <button id="viewModeToggle" class="btn-main bg-dark-card border border-dark-border text-neutral-300 hover:text-white text-xs py-2 px-3">
               <i class="ph ph-cube" id="viewModeIcon"></i>
               <span id="viewModeLabel">Launch 3D Runway</span>
+            </button>
+
+            <!-- Live Photo Sync Button -->
+            <button id="syncLivePhotosBtn" class="btn-main bg-dark-card border border-dark-border text-neutral-300 hover:text-white text-xs py-2 px-3 flex items-center gap-1.5" title="Fetch latest photos live">
+              <i class="ph ph-arrows-clockwise" id="syncLiveIcon"></i>
+              <span id="syncLiveLabel">Sync live feed</span>
+            </button>
+
+            <!-- Instagram Feed Config Button -->
+            <button id="feedSettingsBtn" class="btn-main bg-dark-card border border-dark-border text-neutral-400 hover:text-white text-xs py-2 px-2.5" title="Configure Live Instagram Feed">
+              <i class="ph ph-gear"></i>
             </button>
 
           </div>
@@ -1153,12 +1171,42 @@
     // =================================================================
     // DATA LOADING & STRICT GADDAMUNUGU NORMALIZATION
     // =================================================================
-    async function loadPhotographs() {
+    // ── LIVE PHOTO FETCHING & INSTAGRAM SYNC ENGINE ───────────────────────
+    const LIVE_FEED_CONFIG = {
+      localEndpoint: 'photos.json',
+      get feedUrl() {
+        return localStorage.getItem('uday_live_feed_url') || '';
+      },
+      set feedUrl(val) {
+        if (val && val.trim().length > 0) {
+          localStorage.setItem('uday_live_feed_url', val.trim());
+        } else {
+          localStorage.removeItem('uday_live_feed_url');
+        }
+      },
+      pollIntervalMs: 5 * 60 * 1000, // Background poll every 5 minutes
+      lastSyncTimestamp: null,
+    };
+
+    let isInitialLoadDone = false;
+
+    async function loadPhotographs(isManualSync = false) {
+      const syncBtn = document.getElementById('syncLivePhotosBtn');
+      const syncIcon = document.getElementById('syncLiveIcon');
+      const syncLabel = document.getElementById('syncLiveLabel');
+
+      if (isManualSync && syncIcon) {
+        syncIcon.classList.add('animate-spin');
+        if (syncLabel) syncLabel.textContent = 'Syncing...';
+      }
+
       try {
-        const res = await fetch('photos.json?v=' + Date.now(), { cache: 'no-store' });
+        // Step 1: Fetch primary repository catalog with cache-busting
+        const res = await fetch(`photos.json?v=${Date.now()}`, { cache: 'no-store' });
         const json = await res.json();
         const rawPhotos = json.photos || [];
-        photoData = rawPhotos.map((p, idx) => {
+        
+        let catalog = rawPhotos.map((p, idx) => {
           const num = String(idx + 1).padStart(2, '0');
           return {
             ...p,
@@ -1167,15 +1215,171 @@
             location: 'Gaddamunugu, India'
           };
         });
+
+        // Step 2: If a live Instagram feed URL is configured, fetch and merge live photos
+        const liveFeedUrl = LIVE_FEED_CONFIG.feedUrl;
+        if (liveFeedUrl) {
+          try {
+            const feedRes = await fetch(`${liveFeedUrl}${liveFeedUrl.includes('?') ? '&' : '?'}v=${Date.now()}`, { cache: 'no-store' });
+            if (feedRes.ok) {
+              const feedData = await feedRes.json();
+              const items = Array.isArray(feedData) ? feedData : (feedData.data || feedData.posts || []);
+              
+              const livePhotos = items.map((item, i) => {
+                const mediaUrl = item.mediaUrl || item.imageUrl || item.src || (item.media && item.media[0] && item.media[0].url);
+                if (!mediaUrl) return null;
+                const caption = item.caption || item.text || `Live Gaddamunugu Frame ${i + 1}`;
+                return {
+                  id: `live-${item.id || i + 1}`,
+                  src: mediaUrl,
+                  title: caption.length > 32 ? caption.slice(0, 32) + '...' : caption,
+                  category: 'landscape',
+                  location: 'Gaddamunugu, India',
+                  exif: 'Prime 50mm · Natural Light · Live Dispatch',
+                  year: '2026',
+                  edition: 'Gaddamunugu Archive',
+                  isLive: true,
+                  permalink: item.permalink || 'https://www.instagram.com/lensofuday/'
+                };
+              }).filter(Boolean);
+
+              if (livePhotos.length > 0) {
+                // Prepend newly fetched live photos at the beginning of the gallery
+                catalog = [...livePhotos, ...catalog];
+              }
+            }
+          } catch (feedErr) {
+            console.warn('Live feed fetch warning:', feedErr);
+          }
+        }
+
+        photoData = catalog;
+        LIVE_FEED_CONFIG.lastSyncTimestamp = new Date();
+
+        // Step 3: Update UI telemetry and counts
+        const liveStatusEl = document.getElementById('liveSyncStatus');
+        if (liveStatusEl) {
+          liveStatusEl.textContent = `LIVE FEED ACTIVE · ${photoData.length} FRAMES`;
+        }
+
+        const spatialCountEl = document.getElementById('spatialCountDisplay');
+        if (spatialCountEl) {
+          spatialCountEl.textContent = `${photoData.length} FRAMES IN 3D SPACE`;
+        }
+
+        const roomCountEl = document.getElementById('roomFrameCount');
+        if (roomCountEl) {
+          roomCountEl.textContent = `1 / ${photoData.length}`;
+        }
+
+        // Render gallery
         renderGrid();
-        initTaglineReveal();
-        initAdvancedHero3DLens();
-        initSpatial3DGallery();
-        init3DRoomSimulator();
+
+        if (!isInitialLoadDone) {
+          initTaglineReveal();
+          initAdvancedHero3DLens();
+          initSpatial3DGallery();
+          init3DRoomSimulator();
+          isInitialLoadDone = true;
+        } else {
+          // Re-render spatial quads texture if spatial is already initialized
+          if (isSpatialInitialized && spatialScene) {
+            updateSpatialTextures();
+          }
+          if (roomPictureMesh) {
+            updateRoomArtwork();
+          }
+        }
+
+        if (isManualSync) {
+          playFocusTick();
+          if (syncLabel) syncLabel.textContent = `Synced ${photoData.length} frames`;
+          setTimeout(() => {
+            if (syncLabel) syncLabel.textContent = 'Sync live feed';
+            if (syncIcon) syncIcon.classList.remove('animate-spin');
+          }, 2400);
+        }
+
       } catch (err) {
-        console.error('Failed to load photos.json:', err);
+        console.error('Failed to load photos:', err);
+        if (isManualSync && syncLabel) {
+          syncLabel.textContent = 'Sync error';
+          if (syncIcon) syncIcon.classList.remove('animate-spin');
+        }
       }
     }
+
+    // Dynamic spatial texture updater for live photo changes
+    function updateSpatialTextures() {
+      if (!spatialQuads || spatialQuads.length === 0) return;
+      const loader = new THREE.TextureLoader();
+      spatialQuads.forEach((quad, i) => {
+        if (photoData[i]) {
+          loader.load(photoData[i].src, (tex) => {
+            quad.material.map = tex;
+            quad.material.needsUpdate = true;
+          });
+        }
+      });
+    }
+
+    // Live Feed Controls & Modal Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      const syncBtn = document.getElementById('syncLivePhotosBtn');
+      if (syncBtn) {
+        syncBtn.addEventListener('click', () => loadPhotographs(true));
+      }
+
+      const settingsBtn = document.getElementById('feedSettingsBtn');
+      const modal = document.getElementById('feedSettingsModal');
+      const closeBtn = document.getElementById('closeFeedModalBtn');
+      const input = document.getElementById('liveFeedInput');
+      const saveBtn = document.getElementById('saveFeedBtn');
+      const clearBtn = document.getElementById('clearFeedBtn');
+
+      if (settingsBtn && modal) {
+        settingsBtn.addEventListener('click', () => {
+          if (input) input.value = LIVE_FEED_CONFIG.feedUrl;
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          playMechanicalClick(1400, 0.03);
+        });
+      }
+
+      function closeModal() {
+        if (modal) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+          playMechanicalClick(1100, 0.02);
+        }
+      }
+
+      if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          if (input) {
+            LIVE_FEED_CONFIG.feedUrl = input.value;
+          }
+          closeModal();
+          loadPhotographs(true);
+        });
+      }
+
+      if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+          LIVE_FEED_CONFIG.feedUrl = '';
+          if (input) input.value = '';
+          closeModal();
+          loadPhotographs(true);
+        });
+      }
+
+      // Background silent polling every 5 minutes
+      setInterval(() => {
+        loadPhotographs(false);
+      }, LIVE_FEED_CONFIG.pollIntervalMs);
+    });
 
     // Render Grid View with 3D Holographic Perspective Tilt & Museum Glass
     function renderGrid() {
@@ -2770,5 +2974,39 @@
     // Initialize application on load
     window.addEventListener('DOMContentLoaded', loadPhotographs);
   </script>
+  <!-- LIVE FEED CONFIGURATION MODAL -->
+  <div id="feedSettingsModal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl hidden items-center justify-center p-6 transition-opacity duration-300">
+    <div class="flat-card p-6 sm:p-8 max-w-lg w-full flex flex-col gap-5 border border-dark-border bg-dark-surface">
+      <div class="flex items-center justify-between pb-3 border-b border-dark-border">
+        <div class="flex items-center gap-2 text-white font-semibold">
+          <i class="ph ph-instagram-logo text-lg text-emerald-400"></i>
+          <span>Live Instagram Feed Setup</span>
+        </div>
+        <button id="closeFeedModalBtn" class="w-8 h-8 rounded-lg border border-dark-border bg-dark-card text-neutral-400 hover:text-white flex items-center justify-center">
+          <i class="ph ph-x text-base"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-neutral-400 leading-relaxed">
+        Connect your Instagram account to automatically stream newly posted photos into this gallery. We recommend using a free JSON feed from <strong class="text-white">behold.so</strong> or any standard Instagram feed URL.
+      </p>
+
+      <div class="flex flex-col gap-2">
+        <label for="liveFeedInput" class="text-xs font-mono text-neutral-300">INSTAGRAM FEED URL</label>
+        <input type="url" id="liveFeedInput" placeholder="https://feeds.behold.so/YOUR_FEED_ID" class="px-4 py-2 rounded-lg border border-dark-border bg-black text-white text-xs font-mono focus:outline-none focus:border-white transition-colors w-full"/>
+        <span class="text-[11px] text-neutral-500 font-mono">Leave blank to use default high resolution Gaddamunugu repository catalog.</span>
+      </div>
+
+      <div class="flex items-center justify-between pt-3 border-t border-dark-border gap-3">
+        <button id="clearFeedBtn" class="px-3 py-2 rounded-lg border border-dark-border bg-dark-card text-neutral-400 hover:text-white text-xs font-semibold transition-all">
+          Reset to default
+        </button>
+        <button id="saveFeedBtn" class="btn-main bg-white text-black text-xs py-2 px-4 font-semibold">
+          Save and sync live
+        </button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
